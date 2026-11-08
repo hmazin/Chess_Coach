@@ -1,0 +1,211 @@
+[
+  {
+    "id": "petrov",
+    "name": "Petrov Defense",
+    "side": "Black",
+    "setup": "e4 e5 Nf3 Nf6",
+    "lines": [
+      {
+        "name": "3.Nxe5 · 5.d4",
+        "moves": "Nxe5 d6 Nf3 Nxe4 d4 d5 Bd3 Bd6 O-O O-O",
+        "notes": [
+          ["Attack the knight on e5 with a pawn.", "Chase the knight first. If it retreats to f3, you can recover the pawn on e4."],
+          ["White's knight retreated. What can your knight take?", "Recover the e4-pawn with your knight."],
+          ["Use a pawn to support your knight on e4.", "The d-pawn holds the center and protects your knight."],
+          ["Develop the bishop next to your king.", "The bishop comes to an active square and clears the way to castle."],
+          ["Your kingside is clear. Where can your king go?", "Castle and finish the opening with your king safe."]
+        ]
+      },
+      {
+        "name": "3.Nxe5 · 5.Nc3",
+        "studyFrom": 2,
+        "moves": "Nxe5 d6 Nf3 Nxe4 Nc3 Nxc3 dxc3 Be7 Bd3 O-O",
+        "notes": [
+          ["Attack the knight on e5 with a pawn.", "Chase the knight first, then look to recover the pawn."],
+          ["White's knight retreated. What can your knight take?", "Recover the pawn on e4."],
+          ["White's new knight attacks your e4-knight. Can you trade them?", "Trade on c3. White can recapture with a pawn, and you can finish development."],
+          ["Clear the bishop out of the way of castling.", "Develop the bishop to e7 and prepare to castle."],
+          ["Your kingside is clear.", "Castle. White's open d-file can matter later, so get your king safe now."]
+        ]
+      },
+      {
+        "name": "3.Nxe5 · 5.Qe2",
+        "studyFrom": 2,
+        "moves": "Nxe5 d6 Nf3 Nxe4 Qe2 Qe7 d3 Nf6 Nc3 Nc6",
+        "notes": [
+          ["Attack the knight on e5 with a pawn.", "Chase the knight first, then look to recover the pawn."],
+          ["White's knight retreated. What can your knight take?", "Recover the pawn on e4."],
+          ["White's queen attacks your knight. Use your queen to defend it.", "Meet Qe2 with Qe7. If White takes on e4, your queen can take back."],
+          ["The d-pawn now attacks your knight too. Return it to a familiar square.", "Retreat to f6. Your queen covers the e-file."],
+          ["Develop the queenside knight.", "Bring out the b8-knight and add control of the center."]
+        ]
+      },
+      {
+        "name": "3.Nxe5 · 4.Nxf7",
+        "studyFrom": 1,
+        "moves": "Nxe5 d6 Nxf7 Kxf7 d4 c5 Nc3 cxd4 Qxd4 Nc6",
+        "notes": [
+          ["Attack the knight on e5 with a pawn.", "Chase the knight. Be ready if it takes on f7 instead of retreating."],
+          ["The knight on f7 forks your queen and rook. Can your king take it?", "Take the knight. You give up castling rights, so watch White's central pawns."],
+          ["Which pawn can attack White's d4-pawn from the side?", "Play ...c5 to challenge White's center before it builds an attack."],
+          ["Your c-pawn can trade for a central pawn.", "Take on d4. If the queen recaptures, you can develop with tempo."],
+          ["Develop a knight that attacks the queen on d4.", "Nc6 brings a piece into play and makes the queen move again."]
+        ]
+      },
+      {
+        "name": "3.Bc4 · Bishop comes out early",
+        "moves": "Bc4 Nxe4 d3 Nf6 Nxe5 d5 Bb3 Bd6",
+        "notes": [
+          ["Count the defenders of White's e4-pawn.", "The e4-pawn is undefended. Take it with your knight."],
+          ["The d-pawn attacks your knight. Return it to safety.", "Retreat to f6. If White takes on e5, you can strike at the bishop with ...d5."],
+          ["Which pawn push attacks the bishop on c4?", "Push ...d5. It gains time against the bishop and opens a diagonal for yours."],
+          ["Develop the bishop so it attacks the knight on e5.", "The bishop on d6 presses the e5-knight and clears the way to castle."]
+        ]
+      },
+      {
+        "name": "3.Nc3 · 4.Bb5",
+        "moves": "Nc3 Nc6 Bb5 Bb4 O-O O-O d3 d6",
+        "notes": [
+          ["White developed a second knight. Bring out yours.", "Develop to c6 and protect e5. All four knights are now out."],
+          ["Develop your kingside bishop to the square that attacks c3.", "The bishop on b4 puts pressure on White's c3-knight and clears the way to castle."],
+          ["White has castled. Your kingside is ready too.", "Castle to match White's king safety."],
+          ["Support your e5-pawn and open a diagonal for your other bishop.", "Play ...d6. It strengthens e5 and frees the c8-bishop."]
+        ]
+      },
+      {
+        "name": "3.Nc3 · 4.Bc4",
+        "studyFrom": 1,
+        "moves": "Nc3 Nc6 Bc4 Nxe4 Nxe4 d5 Bd3 dxe4 Bxe4 Bd6",
+        "notes": [
+          ["White developed a second knight. Bring out yours.", "Develop to c6 and protect e5."],
+          ["Look two moves ahead. If you trade knights on e4, which pawn could fork the recapturing knight and bishop?", "Take on e4. If White recaptures with the c3-knight, ...d5 attacks both pieces."],
+          ["Use a pawn to attack the knight on e4 and the bishop on c4 at once.", "The d-pawn forks the knight and bishop."],
+          ["The bishop moved away. What can your d-pawn take?", "Take the knight. The two sides have traded a knight each."],
+          ["Develop your kingside bishop and get ready to castle.", "The bishop on d6 develops with support for e5 and prepares castling."]
+        ]
+      },
+      {
+        "name": "3.Nc3 · 4.d4",
+        "studyFrom": 1,
+        "moves": "Nc3 Nc6 d4 exd4 Nxd4 Bb4 Nxc6 bxc6 Bd3 d5",
+        "notes": [
+          ["Develop the knight that can defend e5.", "Bring out the b8-knight. It protects e5 and prepares a central trade."],
+          ["White's d-pawn attacks e5. Can your pawn capture it?", "Trade in the center and make White recapture on d4."],
+          ["Develop your bishop with a pin against White's king.", "The bishop on b4 pins the c3-knight to the king on e1."],
+          ["Recapture toward the center and keep your d-pawn free.", "The b-pawn takes on c6. It supports a later ...d5."],
+          ["Use the support of the c6-pawn to occupy the center.", "Push ...d5 while the c6-pawn can protect it."]
+        ]
+      },
+      {
+        "name": "3.d4 · Center attack",
+        "moves": "d4 Nxe4 Bd3 d5 Nxe5 Bd6 O-O O-O",
+        "notes": [
+          ["White has attacked e5. Can you take on e4 first?", "Take the undefended e4-pawn with your knight."],
+          ["The bishop attacks your knight. Support it with a pawn.", "Play ...d5 to defend e4 and claim space in the center."],
+          ["Develop the bishop so it attacks White's e5-knight.", "Play ...Bd6. It challenges the knight and prepares castling."],
+          ["Your kingside is clear.", "Castle so you can play the central position with your king safe."]
+        ]
+      },
+      {
+        "name": "3.d3 · Quiet setup",
+        "moves": "d3 Nc6 Be2 d5 exd5 Nxd5 O-O Be7",
+        "notes": [
+          ["White protected e4. Develop a piece that protects your e5-pawn.", "Develop the b8-knight to c6 and prepare ...d5."],
+          ["You can challenge the e4-pawn directly with a central pawn.", "Push ...d5. White's quiet setup gives you time to fight for the center."],
+          ["Recapture on d5 with a knight.", "The f6-knight takes on d5 and occupies the center."],
+          ["Get the last piece out of the way of castling.", "Develop the bishop to e7. Castling is your next normal step."]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bishop",
+    "name": "Bishop's Opening",
+    "side": "White",
+    "setup": "e4 e5 Bc4",
+    "lines": [
+      {
+        "name": "2...Nf6 · Develop and castle",
+        "moves": "Nf6 d3 Nc6 Nf3 Bc5 O-O d6 c3",
+        "notes": [
+          ["The f6-knight attacks e4. Can you defend with a pawn?", "Play d3 to protect e4."],
+          ["Develop the knight between your king and rook.", "Bring the knight to f3 and prepare to castle."],
+          ["Both kingside pieces are out.", "Castle kingside."],
+          ["Advance the pawn that can support a later d4.", "Play c3 to prepare d4. Check the center before pushing it."]
+        ]
+      },
+      {
+        "name": "2...Nf6 · 3...d5 hits your bishop",
+        "studyFrom": 1,
+        "moves": "Nf6 d3 d5 exd5 Nxd5 Nf3 Nc6 O-O",
+        "notes": [
+          ["The f6-knight attacks e4. Can you defend with a pawn?", "Play d3 to protect e4."],
+          ["The pawn on d5 attacks your bishop. Can you remove it?", "Take on d5 with your e-pawn. That removes the threat to the bishop."],
+          ["Develop the kingside knight.", "Nf3 develops and clears the way to castle."],
+          ["Your kingside is clear.", "Castle kingside and continue developing."]
+        ]
+      },
+      {
+        "name": "2...Nc6 · Knight first",
+        "moves": "Nc6 Nf3 Nf6 d3 Bc5 O-O d6 c3",
+        "notes": [
+          ["Develop the knight between your king and rook.", "Bring the knight to f3 and attack e5."],
+          ["Now the f6-knight attacks e4. Protect the pawn.", "Play d3. This is the same setup as the ...Nf6 line."],
+          ["Both kingside pieces are out.", "Castle kingside."],
+          ["Which pawn can support d4?", "Play c3 and prepare a central push."]
+        ]
+      },
+      {
+        "name": "2...Bc5 · Develop and castle",
+        "moves": "Bc5 Nf3 Nc6 d3 Nf6 O-O d6 c3",
+        "notes": [
+          ["Develop the knight that can attack e5.", "Bring out the kingside knight to f3."],
+          ["Use a pawn to support e4 before Black attacks it.", "Play d3 to support e4 and free your c1-bishop."],
+          ["Both kingside pieces are out.", "Castle kingside."],
+          ["Advance the pawn that can support a later d4.", "Play c3. You reached the same setup by a different move order."]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "qgd",
+    "name": "Queen's Gambit Declined",
+    "side": "Black",
+    "setup": "d4 d5 c4",
+    "lines": [
+      {
+        "name": "3.Nc3 · 4.Bg5",
+        "moves": "e6 Nc3 Nf6 Bg5 Be7 e3 O-O",
+        "notes": [
+          ["Protect the d5-pawn with another pawn.", "Play ...e6 to hold d5 and open a diagonal for your kingside bishop."],
+          ["Develop a kingside knight that can defend d5.", "Nf6 develops and adds a defender to d5."],
+          ["Put a bishop between White's bishop and your queen.", "Be7 breaks the pin and prepares castling."],
+          ["Your kingside is ready.", "Castle. Look for a timely ...c5 later."]
+        ]
+      },
+      {
+        "name": "3.Nf3 · Knight develops first",
+        "studyFrom": 1,
+        "moves": "e6 Nf3 Nf6 Nc3 Be7 Bg5 O-O",
+        "notes": [
+          ["Protect the d5-pawn with another pawn.", "Play ...e6 to hold d5."],
+          ["Develop a kingside knight that can defend d5.", "Nf6 develops and adds a defender to d5."],
+          ["Clear your kingside bishop out of the way.", "Be7 prepares castling and keeps your queen clear of a future pin."],
+          ["Your kingside is ready.", "Castle. You used the same development plan despite the different move order."]
+        ]
+      },
+      {
+        "name": "3.cxd5 · Exchange Variation",
+        "studyFrom": 1,
+        "moves": "e6 cxd5 exd5 Nc3 Nf6 Bg5 Be7 e3 O-O",
+        "notes": [
+          ["Protect the d5-pawn with another pawn.", "Play ...e6 to hold d5."],
+          ["White took on d5. Recapture with a pawn.", "Take back with the e-pawn and keep a pawn in the center."],
+          ["Develop a kingside knight that can defend d5.", "Nf6 develops and supports the central pawn."],
+          ["Put your bishop between White's bishop and your queen.", "Be7 breaks the pin and prepares castling."],
+          ["Your kingside is ready.", "Castle. The exchange freed your c8-bishop, so look for a good square for it next."]
+        ]
+      }
+    ]
+  }
+]

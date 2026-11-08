@@ -1,0 +1,46 @@
+[Event "Petrov Defense - White takes on e5"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Practice opponent"]
+[Black "You"]
+[Result "*"]
+
+1. e4 e5 2. Nf3 Nf6 3. Nxe5 d6 {Chase the knight first.} 4. Nf3 Nxe4
+{Now recover the pawn.} 5. d4 d5 {Hold the center and support the e4-knight.}
+6. Bd3 Bd6 {Develop the bishop and get ready to castle.} 7. O-O O-O *
+
+[Event "Queen's Gambit Declined - White develops Nc3"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Practice opponent"]
+[Black "You"]
+[Result "*"]
+
+1. d4 d5 2. c4 e6 {Support d5 with a pawn.} 3. Nc3 Nf6
+{Develop and add another defender to d5.} 4. Bg5 Be7 {Unpin the knight from the queen.}
+5. e3 O-O {Get the king safe. Later, look for a timely ...c5.} *
+
+[Event "Queen's Gambit Declined - White develops Nf3"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Practice opponent"]
+[Black "You"]
+[Result "*"]
+
+1. d4 d5 2. c4 e6 3. Nf3 Nf6 4. Nc3 Be7 5. Bg5 O-O
+{The same moves work when White develops the king's knight first.} *
+
+[Event "Petrov Defense - White plays 3.Bc4"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Practice opponent"]
+[Black "You"]
+[Result "*"]
+
+1. e4 e5 2. Nf3 Nf6 3. Bc4 Nxe4 {White's e4-pawn is undefended.}
+4. d3 Nf6 5. Nxe5 d5 {Hit the bishop on c4 and open a line for your own bishop.}
+6. Bb3 Bd6 *

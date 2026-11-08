@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Practice chess opening variations against an offline opponent.">
+  <meta name="theme-color" content="#171b18">
+  <title>Chess Coach</title>
+  <link rel="icon" type="image/svg+xml" href="assets/pieces/wN.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="repertoire.js"></script>
+  <script defer src="trainer.js"></script>
+</head>
+<body>
+  <div class="shell" id="chess-coach">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon"><img src="assets/pieces/wN.svg" alt=""></div>
+        <div>
+          <h1>Chess Coach</h1>
+          <p>Opening practice for blitz</p>
+        </div>
+      </div>
+      <span class="offline"><span aria-hidden="true"></span> Offline practice</span>
+    </header>
+
+    <main class="workspace">
+      <section class="panel setup-panel" aria-labelledby="setup-title">
+        <h2 id="setup-title">Practice setup</h2>
+        <label>
+          Opening
+          <select data-opening></select>
+        </label>
+        <label>
+          Practice mode
+          <select data-mode aria-describedby="mode-description">
+            <option value="mixed">Mix replies</option>
+            <option value="study">Choose a variation</option>
+            <option value="review">Review missed moves</option>
+          </select>
+        </label>
+        <p class="secondary" id="mode-description" data-mode-description></p>
+        <label data-line-control hidden>
+          Variation
+          <select data-line></select>
+        </label>
+        <div class="opening-progress">
+          <div class="progress-label">
+            <label for="coverage">Variations practiced</label>
+            <span data-coverage></span>
+          </div>
+          <progress id="coverage" value="0" max="1"></progress>
+          <p class="secondary" data-review-count></p>
+        </div>
+      </section>
+
+      <section class="panel board-panel" aria-labelledby="opening-title">
+        <div class="board-heading">
+          <div>
+            <p class="eyebrow">Practice board</p>
+            <h2 id="opening-title" data-opening-title></h2>
+          </div>
+          <p class="turn-badge" aria-live="polite" data-turn></p>
+        </div>
+        <div class="board" role="group" aria-label="Chessboard" data-board></div>
+        <div class="board-footer">
+          <p>Choose a piece, then its destination.</p>
+          <p class="step" data-step></p>
+        </div>
+      </section>
+
+      <section class="panel coach-panel" aria-labelledby="coach-title">
+        <h2 id="coach-title">Coach</h2>
+        <p class="feedback" aria-live="polite" data-feedback></p>
+        <button class="action" type="button" data-action>Hint</button>
+        <div class="move-history">
+          <h3>Move history</h3>
+          <p data-moves></p>
+        </div>
+        <p class="secondary" role="status" data-storage-warning hidden>Progress is available for this session.</p>
+      </section>
+    </main>
+    <noscript>Enable JavaScript in your browser to play Chess Coach.</noscript>
+  </div>
+</body>
+</html>

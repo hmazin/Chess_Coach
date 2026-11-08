@@ -1,0 +1,45 @@
+[Event "Bishop's Opening - against ...Nf6"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "You"]
+[Black "Practice opponent"]
+[Result "*"]
+
+1. e4 e5 2. Bc4 Nf6 3. d3 {Guard e4 against the f6-knight.} Nc6
+4. Nf3 {Develop and get ready to castle.} Bc5 5. O-O {Get your king to safety.}
+d6 6. c3 {Prepare d4. Before you push it, check what your opponent can capture.} *
+
+[Event "Bishop's Opening - against ...Bc5"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "You"]
+[Black "Practice opponent"]
+[Result "*"]
+
+1. e4 e5 2. Bc4 Bc5 3. Nf3 {Develop and attack e5.} Nc6 4. d3 Nf6
+5. O-O d6 6. c3 {Same position as the ...Nf6 line. Prepare d4.} *
+
+[Event "Bishop's Opening - against ...Nc6"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "You"]
+[Black "Practice opponent"]
+[Result "*"]
+
+1. e4 e5 2. Bc4 Nc6 3. Nf3 Nf6 4. d3 {Defend e4.} Bc5
+5. O-O d6 6. c3 {Same setup. Prepare d4.} *
+
+[Event "Bishop's Opening - Black hits the bishop with ...d5"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "You"]
+[Black "Practice opponent"]
+[Result "*"]
+
+1. e4 e5 2. Bc4 Nf6 3. d3 d5
+4. exd5 {The pawn on d5 was attacking your bishop. Removing the pawn answers the threat.}
+Nxd5 5. Nf3 Nc6 6. O-O *
