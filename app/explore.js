@@ -235,7 +235,7 @@
   }
   explain.addEventListener("click", () => {
     root.dispatchEvent(new CustomEvent("coach-question", {detail:
-      "Why is " + moveLabel(current.move) + " useful or risky? Show the strongest checked reply. If Stockfish preferred another move, explain what it does differently.",
+      "What is the main consequence of " + moveLabel(current.move) + "? Start with any checked tactic or material loss. Show one concrete reply and, if Stockfish preferred another move, explain what it does differently.",
     }));
   });
   showPosition();
