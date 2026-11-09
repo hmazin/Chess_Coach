@@ -49,26 +49,31 @@ def collect_positions(directory):
     return positions, histories
 
 
-def describe(board, move, info):
+def move_facts(board, move):
     piece = board.piece_at(move.from_square)
     captured = board.piece_at(move.to_square)
     after = board.copy(stack=False)
     after.push(move)
-    targets = [
-        f"{chess.piece_name(target.piece_type)} on {chess.square_name(square)}"
-        for square in after.attacks(move.to_square)
-        if (target := after.piece_at(square)) and target.color != piece.color
-    ]
     facts = [f"{chess.piece_name(piece.piece_type)} moves from {chess.square_name(move.from_square)} to {chess.square_name(move.to_square)}"]
     if captured or board.is_en_passant(move):
         facts.append(f"captures a {chess.piece_name(captured.piece_type) if captured else 'pawn'}")
     if after.is_check():
         facts.append("gives check")
-    if targets:
-        facts.append("on its new square it attacks " + ", ".join(targets))
+    for color, relation in ((not piece.color, "attacks"), (piece.color, "covers its own")):
+        targets = [
+            f"{chess.piece_name(target.piece_type)} on {chess.square_name(square)}"
+            for square in after.attacks(move.to_square)
+            if (target := after.piece_at(square)) and target.color == color
+        ]
+        if targets:
+            facts.append(f"from its new square it {relation} " + ", ".join(targets))
+    return "; ".join(facts)
+
+
+def describe(board, move, info):
     return {
         "san": board.san(move),
-        "facts": "; ".join(facts),
+        "facts": move_facts(board, move),
         "line": board.variation_san(info["pv"][:5]),
         "score": info["score"].pov(board.turn).score(mate_score=10000),
         "depth": info["depth"],
