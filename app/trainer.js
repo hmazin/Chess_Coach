@@ -166,6 +166,7 @@
     root.dispatchEvent(new CustomEvent("coach-position", {detail: {
       history: frame.history,
       attempted: lastAttempt,
+      side: opening.side,
     }}));
   }
 

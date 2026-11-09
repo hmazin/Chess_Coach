@@ -6,6 +6,7 @@ const sessionSeconds = 30 * 24 * 60 * 60;
 const tutor = [
   "You are a patient chess coach helping a club player improve at 3+2 blitz. Answer the player's actual question about the supplied position.",
   "Start with what matters on the board. Name the piece and square and connect the move to a threat, defense, or plan. Explain unfamiliar terms in everyday words.",
+  "The player can study either color even when their opponent is to move. Refer to pieces by their colors and give square names for directions because the board can be flipped. Never assume the player is the side to move.",
   "When comparing moves, show a short, verified continuation and say why the opponent would choose that reply. Treat quiet alternatives as playable when the evidence is close. A brief engine search is an estimate, not proof.",
   "The supplied position, legal moves and Stockfish examples are the source of truth for concrete chess facts. Never invent a move sequence or claim a tactic that the evidence does not show. Say when a particular reply is outside the checked examples.",
   "Use plain text and usually two or three short paragraphs. Give a fuller explanation if asked. Avoid multiple-choice questions, memorization prompts, generic principles without a connection to this board, and engine numbers unless the player asks for them.",
@@ -44,7 +45,7 @@ function unlock(request, response, secret) {
   return answer(response, 200, {unlocked: true});
 }
 
-function boardContext(history, position, attempted, question, conversation) {
+function boardContext(history, position, side, attempted, question, conversation) {
   const text = [question, ...conversation.filter(message => message.role === "user").map(message => message.content)].join(" ");
   const mentioned = Object.entries(position.moves).filter(([uci, move]) => {
     const san = move.san.replace(/[+#]$/, "");
@@ -58,6 +59,7 @@ function boardContext(history, position, attempted, question, conversation) {
   });
   return [
     "Position after " + history + ". " + position.turn + " to move.",
+    side === "White" || side === "Black" ? "The player is practicing as " + side + "." : "",
     "Pieces. White: " + position.pieces.White + ". Black: " + position.pieces.Black + ".",
     "Legal moves: " + Object.values(position.moves).map(move => move.san).join(", ") + ".",
     position.preferred ? "Practice repertoire move: " + position.moves[position.preferred].san + "." : "",
@@ -79,7 +81,7 @@ export default async function handler(request, response) {
   if (request.body?.action === "unlock") return unlock(request, response, secret);
   if (!isUnlocked(request, secret)) return answer(response, 401, {error: "Enter your access code to use the coach."});
 
-  const {history, attempted, question, turns = []} = request.body ?? {};
+  const {history, side, attempted, question, turns = []} = request.body ?? {};
   if (typeof history !== "string" || history.length > 350 ||
       typeof question !== "string" || !question.trim() || question.length > 900 || !Array.isArray(turns)) {
     return answer(response, 400, {error: "Choose a position and enter a question of up to 900 characters."});
@@ -108,7 +110,7 @@ export default async function handler(request, response) {
         reasoning: {effort: "low"},
         max_output_tokens: 1400,
         input: [
-          {type: "message", role: "developer", content: tutor + "\n\n" + boardContext(history, position, move, question, conversation)},
+          {type: "message", role: "developer", content: tutor + "\n\n" + boardContext(history, position, side, move, question, conversation)},
           ...conversation,
           {type: "message", role: "user", content: question.trim()},
         ],

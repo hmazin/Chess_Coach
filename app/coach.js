@@ -59,7 +59,7 @@
   }
 
   root.addEventListener("coach-position", ({detail}) => {
-    if (position?.history !== detail.history) {
+    if (position?.history !== detail.history || position?.side !== detail.side) {
       pending?.abort();
       pending = null;
       send.disabled = false;
