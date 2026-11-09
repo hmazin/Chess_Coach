@@ -3,14 +3,21 @@
   const openingSelect = root.querySelector("[data-opening]");
   const mode = root.querySelector("[data-mode]");
   const lineControl = root.querySelector("[data-line-control]");
+  const lineLabel = root.querySelector("[data-line-label]");
   const lineSelect = root.querySelector("[data-line]");
   const grid = root.querySelector("[data-board]");
+  const boardQuestion = root.querySelector("[data-board-question]");
+  const boardInstructions = root.querySelector("[data-board-instructions]");
+  const boardArrows = root.querySelector("[data-board-arrows]");
   const openingTitle = root.querySelector("[data-opening-title]");
   const modeDescription = root.querySelector("[data-mode-description]");
   const turn = root.querySelector("[data-turn]");
   const stepLabel = root.querySelector("[data-step]");
   const moves = root.querySelector("[data-moves]");
   const action = root.querySelector("[data-action]");
+  const learnButton = root.querySelector("[data-learn]");
+  const lessonTitle = root.querySelector("[data-lesson-title]");
+  const lessonChoices = root.querySelector("[data-lesson-choices]");
   const feedback = root.querySelector("[data-feedback]");
   const reviewCount = root.querySelector("[data-review-count]");
   const coverageLabel = root.querySelector("[data-coverage]");
@@ -18,6 +25,7 @@
   const storageWarning = root.querySelector("[data-storage-warning]");
   const storagePrefix = "chess-coach:v1:";
   const descriptions = {
+    learn: "Compare positions and learn why a move works.",
     mixed: "Play against different replies in shuffled order.",
     study: "Pick a reply and learn the plan from that position.",
     review: "Retry moves where you needed a hint or tried another line.",
@@ -30,6 +38,7 @@
   const decisions = new Map();
   const mixBags = new Map();
   let opening, line, step, firstStep, selected, hintShown, neededHelp, complete, reviewEmpty;
+  let lesson, displayedStep;
 
   function read(key) {
     try {
@@ -103,8 +112,29 @@
     return line.frames[step];
   }
 
-  function renderBoard(frame) {
+  function renderArrows(arrows, order) {
+    boardArrows.replaceChildren(...arrows.map(([from, to, style]) => {
+      const start = order.indexOf(from);
+      const end = order.indexOf(to);
+      const x = start % 8 + .5;
+      const y = Math.floor(start / 8) + .5;
+      const dx = end % 8 + .5 - x;
+      const dy = Math.floor(end / 8) + .5 - y;
+      const distance = Math.hypot(dx, dy);
+      const arrow = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      arrow.setAttribute("class", style);
+      arrow.setAttribute("x1", x + dx / distance * .24);
+      arrow.setAttribute("y1", y + dy / distance * .24);
+      arrow.setAttribute("x2", x + dx - dx / distance * .15);
+      arrow.setAttribute("y2", y + dy - dy / distance * .15);
+      arrow.setAttribute("marker-end", "url(#" + style + "-arrow)");
+      return arrow;
+    }));
+  }
+
+  function renderBoard(frame, focus = [], arrows = []) {
     const order = opening.side === "White" ? whiteOrder : whiteOrder.slice().reverse();
+    const learning = mode.value === "learn";
     const targets = new Set(
       selected ? frame.legal.filter(move => move.startsWith(selected)).map(move => move.slice(2, 4)) : []
     );
@@ -114,9 +144,11 @@
       const color = man === man.toUpperCase() ? "White" : "Black";
       const isSelected = name === selected;
       square.dataset.square = name;
+      square.disabled = learning;
       square.classList.toggle("is-dark", (Math.floor(index / 8) + index % 8) % 2 === 1);
       square.classList.toggle("is-reply", frame.last.includes(name));
       square.classList.toggle("is-selected", isSelected);
+      square.classList.toggle("is-focus", focus.includes(name));
       square.classList.toggle("is-target", targets.has(name));
       square.classList.toggle("has-piece", man !== ".");
       square.setAttribute("aria-pressed", String(isSelected));
@@ -129,25 +161,87 @@
       file.textContent = index >= 56 ? name[0] : "";
       rank.textContent = index % 8 === 7 ? name[1] : "";
     });
+    renderArrows(arrows, order);
   }
 
   function reviewEntries() {
     return Array.from(pending, key => decisions.get(key)).filter(entry => entry.opening === opening);
   }
 
+  function availableLessons() {
+    return conceptLessons.filter(lesson => lesson.opening === opening.id);
+  }
+
+  function renderLesson() {
+    const step = lesson.step;
+    const position = lesson.position;
+    const comparing = Boolean(step.examples);
+    const showAnnotations = comparing || lesson.revealed;
+    renderBoard(position.frame, showAnnotations ? position.focus : [], showAnnotations ? position.arrows : []);
+    moves.textContent = position.frame.history;
+    boardQuestion.textContent = lesson.finished ? "" : step.prompt;
+    boardQuestion.hidden = lesson.finished;
+    boardInstructions.textContent = comparing || lesson.revealed ? "Follow the arrows on the board." : "Use the position to answer.";
+    turn.textContent = lesson.finished ? "Lesson complete" : comparing ? "Compare plans" : "Find the idea";
+    stepLabel.textContent = lesson.finished ? "" : "Position " + (lesson.index + 1) + " of " + lesson.lesson.steps.length;
+    lessonTitle.textContent = lesson.finished ? "Take this to your next game" : step.title;
+    feedback.textContent = lesson.explanation;
+    action.textContent = lesson.action;
+    lessonChoices.hidden = lesson.finished;
+    if (lesson.finished) return;
+
+    if (displayedStep !== step) {
+      lessonChoices.replaceChildren(...(step.examples ?? step.options).map(({label}, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "lesson-choice";
+        button.textContent = label;
+        button.addEventListener("click", () => {
+          lesson.select(index);
+          renderLesson();
+        });
+        return button;
+      }));
+      displayedStep = step;
+    }
+    Array.from(lessonChoices.children).forEach((button, index) => {
+      const correct = !comparing && lesson.revealed && step.answer === index;
+      const incorrect = !comparing && lesson.choice === index && step.answer !== index;
+      const example = comparing && lesson.example === index;
+      button.classList.toggle("is-correct", correct);
+      button.classList.toggle("is-incorrect", incorrect);
+      button.classList.toggle("is-comparison", example);
+      button.setAttribute("aria-pressed", String(correct || incorrect || example));
+      button.setAttribute("aria-disabled", String(!comparing && lesson.revealed));
+    });
+  }
+
   function render() {
-    const frame = current();
+    const learning = mode.value === "learn";
     const reviewing = mode.value === "review";
     const count = reviewEntries().length;
-    renderBoard(frame);
+    root.classList.toggle("is-learning", learning);
     openingTitle.textContent = opening.name;
     modeDescription.textContent = descriptions[mode.value];
-    moves.textContent = frame.history;
-    lineControl.hidden = mode.value !== "study";
+    lineControl.hidden = !learning && mode.value !== "study";
+    lineLabel.textContent = learning ? "Lesson" : "Variation";
+    learnButton.hidden = learning || !availableLessons().length;
+    lessonTitle.hidden = !learning;
     reviewCount.textContent = count ? count + (count === 1 ? " move to review" : " moves to review") : "No moves to review yet";
     coverage.max = opening.lines.length;
     coverage.value = opening.lines.filter(line => practiced.has(lineKey(opening, line))).length;
     coverageLabel.textContent = coverage.value + " of " + coverage.max;
+    if (learning) {
+      renderLesson();
+      return;
+    }
+
+    const frame = current();
+    renderBoard(frame);
+    moves.textContent = frame.history;
+    boardQuestion.hidden = true;
+    lessonChoices.hidden = true;
+    boardInstructions.textContent = "Choose a piece, then its destination.";
     stepLabel.textContent = reviewing || complete ? "" : "Move " + (step - firstStep + 1) + " of " + (line.frames.length - firstStep - 1);
 
     if (reviewEmpty) {
@@ -181,6 +275,14 @@
   }
 
   function start() {
+    selected = "";
+    if (mode.value === "learn") {
+      lesson = new ConceptLesson(availableLessons()[lineSelect.selectedIndex]);
+      reviewEmpty = false;
+      render();
+      return;
+    }
+
     const review = mode.value === "review" ? reviewEntries()[0] : null;
     reviewEmpty = mode.value === "review" && !review;
     firstStep = 0;
@@ -195,7 +297,6 @@
     }
     step = firstStep;
     complete = false;
-    selected = "";
     hintShown = false;
     neededHelp = false;
     feedback.textContent = reviewEmpty
@@ -204,11 +305,21 @@
     render();
   }
 
+  function selectMode(selection) {
+    const lessons = availableLessons();
+    mode.querySelector('[value="learn"]').disabled = !lessons.length;
+    if (mode.value === "learn" && !lessons.length) mode.value = "mixed";
+    const options = mode.value === "learn"
+      ? lessons.map(lesson => new Option(lesson.name, lesson.id))
+      : opening.lines.map(line => new Option(line.name));
+    lineSelect.replaceChildren(...options);
+    if (options.some(option => option.value === selection)) lineSelect.value = selection;
+    start();
+  }
+
   function selectOpening(variation) {
     opening = chessRepertoire[openingSelect.selectedIndex];
-    lineSelect.replaceChildren(...opening.lines.map(line => new Option(line.name)));
-    if (opening.lines.some(line => line.name === variation)) lineSelect.value = variation;
-    start();
+    selectMode(variation);
   }
 
   function savePreferences() {
@@ -258,7 +369,7 @@
   }
 
   function choose(name) {
-    if (complete || reviewEmpty) return;
+    if (mode.value === "learn" || complete || reviewEmpty) return;
     const frame = current();
     const man = frame.board[whiteOrder.indexOf(name)];
     const ownsPiece = man !== "." && (man === man.toUpperCase()) === (opening.side === "White");
@@ -286,14 +397,35 @@
     selectOpening();
     savePreferences();
   });
-  for (const select of [mode, lineSelect]) {
-    select.addEventListener("change", () => {
-      start();
-      savePreferences();
-    });
-  }
+  mode.addEventListener("change", () => {
+    selectMode();
+    savePreferences();
+  });
+  lineSelect.addEventListener("change", () => {
+    start();
+    savePreferences();
+  });
+  learnButton.addEventListener("click", () => {
+    const lessons = availableLessons();
+    const relevant = lessons.find(lesson => lesson.practice === line.name) ?? lessons[0];
+    mode.value = "learn";
+    selectMode(relevant.id);
+    savePreferences();
+    boardQuestion.scrollIntoView({block: "nearest"});
+  });
   action.addEventListener("click", () => {
-    if (reviewEmpty) {
+    if (mode.value === "learn") {
+      if (lesson.finished) {
+        mode.value = "study";
+        selectMode(lesson.lesson.practice);
+        savePreferences();
+      } else {
+        const previous = lesson.index;
+        lesson.advance();
+        renderLesson();
+        if (previous !== lesson.index) boardQuestion.scrollIntoView({block: "nearest"});
+      }
+    } else if (reviewEmpty) {
       mode.value = "mixed";
       start();
       savePreferences();

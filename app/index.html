@@ -10,6 +10,8 @@
   <link rel="apple-touch-icon" href="assets/icons/chess-coach-180.png">
   <link rel="stylesheet" href="styles.css">
   <script defer src="repertoire.js"></script>
+  <script defer src="lesson-data.js"></script>
+  <script defer src="concepts.js"></script>
   <script defer src="trainer.js"></script>
   <script defer src="pwa.js"></script>
 </head>
@@ -20,7 +22,7 @@
         <div class="brand-icon"><img src="assets/pieces/wN.svg" alt=""></div>
         <div>
           <h1>Chess Coach</h1>
-          <p>Opening practice for blitz</p>
+          <p>Opening lessons and blitz practice</p>
         </div>
       </div>
       <div class="app-actions">
@@ -39,6 +41,7 @@
         <label>
           Practice mode
           <select data-mode aria-describedby="mode-description">
+            <option value="learn">Learn concepts</option>
             <option value="mixed">Mix replies</option>
             <option value="study">Choose a variation</option>
             <option value="review">Review missed moves</option>
@@ -46,7 +49,7 @@
         </label>
         <p class="secondary" id="mode-description" data-mode-description></p>
         <label data-line-control hidden>
-          Variation
+          <span data-line-label>Variation</span>
           <select data-line></select>
         </label>
         <div class="opening-progress">
@@ -67,17 +70,36 @@
           </div>
           <p class="turn-badge" aria-live="polite" data-turn></p>
         </div>
-        <div class="board" role="group" aria-label="Chessboard" data-board></div>
+        <p class="board-question" data-board-question hidden></p>
+        <div class="board-stage">
+          <div class="board" role="group" aria-label="Chessboard" data-board></div>
+          <svg class="board-arrows" viewBox="0 0 8 8" aria-hidden="true">
+            <defs>
+              <marker id="idea-arrow" markerWidth=".42" markerHeight=".42" markerUnits="userSpaceOnUse" refX="5" refY="3" viewBox="0 0 6 6" orient="auto">
+                <path class="idea-arrowhead" d="M0 0 L6 3 L0 6 Z"/>
+              </marker>
+              <marker id="threat-arrow" markerWidth=".42" markerHeight=".42" markerUnits="userSpaceOnUse" refX="5" refY="3" viewBox="0 0 6 6" orient="auto">
+                <path class="threat-arrowhead" d="M0 0 L6 3 L0 6 Z"/>
+              </marker>
+            </defs>
+            <g data-board-arrows></g>
+          </svg>
+        </div>
         <div class="board-footer">
-          <p>Choose a piece, then its destination.</p>
+          <p data-board-instructions>Choose a piece, then its destination.</p>
           <p class="step" data-step></p>
         </div>
       </section>
 
       <section class="panel coach-panel" aria-labelledby="coach-title">
         <h2 id="coach-title">Coach</h2>
+        <h3 class="lesson-title" data-lesson-title hidden></h3>
+        <div class="lesson-choices" role="group" aria-label="Lesson choices" data-lesson-choices hidden></div>
         <p class="feedback" aria-live="polite" data-feedback></p>
-        <button class="action" type="button" data-action>Hint</button>
+        <div class="coach-actions">
+          <button class="action" type="button" data-action>Hint</button>
+          <button class="action secondary-action" type="button" data-learn>Learn the idea</button>
+        </div>
         <div class="move-history">
           <h3>Move history</h3>
           <p data-moves></p>

@@ -1,0 +1,287 @@
+[
+  {
+    "id": "chase-then-recapture",
+    "opening": "petrov",
+    "name": "Chase, then recapture",
+    "practice": "3.Nxe5 · 5.d4",
+    "takeaway": "When a piece takes your pawn, check whether you can gain time by attacking the piece first. Look at where it goes before deciding what to recapture.",
+    "steps": [
+      {
+        "title": "What changed after White took on e5?",
+        "moves": "e4 e5 Nf3 Nf6 Nxe5",
+        "prompt": "White's knight just took your e5-pawn. What does ...d6 accomplish?",
+        "options": [
+          {"label": "It attacks the knight before I try to recover the pawn."},
+          {"label": "It recaptures the lost pawn.", "feedback": "The d-pawn moves onto an empty square. Look at the two squares a black pawn on d6 could capture."},
+          {"label": "It defends the knight on f6.", "feedback": "A black pawn on d6 attacks c5 and e5. Which of those squares holds a white piece?"}
+        ],
+        "answer": 0,
+        "explanation": "The d-pawn lands on d6 and attacks e5 diagonally. White has to account for that threat. If the knight returns to f3, you can look at taking the e4-pawn with your f6-knight.",
+        "focus": ["d6", "e5"],
+        "arrows": [["d7", "d6", "idea"], ["d6", "e5", "threat"]]
+      },
+      {
+        "title": "Compare the two plans",
+        "prompt": "Switch between the lines. Look at the pawn count and what Black gets in return.",
+        "examples": [
+          {
+            "label": "Chase first",
+            "moves": "e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4",
+            "explanation": "After ...d6, White retreated to f3. Black then took on e4. Each side has lost one pawn. Black's next job is to support the knight on e4 and develop.",
+            "focus": ["d6", "e4"],
+            "arrows": [["f6", "e4", "idea"]]
+          },
+          {
+            "label": "Offer the pawn",
+            "moves": "e4 e5 Nf3 Nf6 Nxe5 Nc6 Nxc6 dxc6",
+            "explanation": "This is the Stafford Gambit. White traded knights on c6 and kept the extra pawn. Black gets a half-open d-file and quick development, so the plan depends on creating enough activity for the pawn.",
+            "focus": ["c6", "d7"],
+            "arrows": [["d7", "c6", "idea"], ["f8", "c5", "idea"]]
+          }
+        ]
+      },
+      {
+        "title": "Apply it when White surprises you",
+        "moves": "e4 e5 Nf3 Nf6 Nxe5 d6 Nxf7",
+        "prompt": "White jumped to f7 and attacks your queen and rook. What should you deal with first?",
+        "options": [
+          {"label": "Take the knight with my king."},
+          {"label": "Carry on with ...Nxe4.", "feedback": "The f7-knight can take your queen on d8. Recheck what White's last move attacked before carrying out the old plan."},
+          {"label": "Move the rook on h8.", "feedback": "Moving the rook leaves the queen on d8 under attack. Look for one move that removes both threats."}
+        ],
+        "answer": 0,
+        "explanation": "Your king can capture the knight on f7. That removes both threats and wins a knight for two pawns. Your king gives up castling, so challenge White's central pawns before they build an attack.",
+        "focus": ["f7", "d8", "h8"],
+        "arrows": [["f7", "d8", "threat"], ["f7", "h8", "threat"], ["e8", "f7", "idea"]]
+      }
+    ]
+  },
+  {
+    "id": "count-defenders",
+    "opening": "petrov",
+    "name": "Count defenders before capturing",
+    "practice": "3.Bc4 · Bishop comes out early",
+    "takeaway": "Before taking an apparently free pawn, ask which opposing piece can recapture on its square. The last move may have added a defender.",
+    "steps": [
+      {
+        "title": "Find the free pawn",
+        "moves": "e4 e5 Nf3 Nf6 Bc4",
+        "prompt": "White developed the bishop to c4. Who defends the white pawn on e4?",
+        "options": [
+          {"label": "The knight on f3.", "feedback": "A knight on f3 can jump to e5 and d4, but e4 is one diagonal step away. Trace the knight's L-shape."},
+          {"label": "Nobody. The f6-knight can take it."},
+          {"label": "The bishop on c4.", "feedback": "The bishop on c4 moves diagonally. The pawn on e4 is on the same rank."}
+        ],
+        "answer": 1,
+        "explanation": "White's bishop points toward f7 and the knight on f3 attacks e5. Neither guards e4. Your knight can take the e4-pawn. If White attacks that knight with d3 afterward, recheck its safety.",
+        "focus": ["e4"],
+        "arrows": [["f6", "e4", "idea"]]
+      },
+      {
+        "title": "One different move changes the capture",
+        "prompt": "Switch White's third move. Does a white piece now control e4?",
+        "examples": [
+          {
+            "label": "White plays Bc4",
+            "moves": "e4 e5 Nf3 Nf6 Bc4",
+            "explanation": "The bishop on c4 leaves e4 undefended. Your f6-knight can take the pawn.",
+            "focus": ["e4", "c4"],
+            "arrows": [["f6", "e4", "idea"]]
+          },
+          {
+            "label": "White plays Nc3",
+            "moves": "e4 e5 Nf3 Nf6 Nc3",
+            "explanation": "The c3-knight can jump to e4 and recapture. In this line, ...Nc6 develops your second knight and protects your e5-pawn.",
+            "focus": ["c3", "e4"],
+            "arrows": [["c3", "e4", "threat"], ["b8", "c6", "idea"]]
+          }
+        ]
+      },
+      {
+        "title": "Find a different kind of defender",
+        "moves": "e4 e5 Nf3 Nf6 d3",
+        "prompt": "White played d3. Which piece could take back if you play ...Nxe4?",
+        "options": [
+          {"label": "The queen on d1.", "feedback": "The queen on d1 does not have a line to e4. Look for a white pawn one diagonal step from e4."},
+          {"label": "The knight on f3.", "feedback": "The f3-knight still cannot jump to e4. White's last move changed which squares the d-pawn controls."},
+          {"label": "The d3-pawn."}
+        ],
+        "answer": 2,
+        "explanation": "A white pawn on d3 captures diagonally to e4. It can take your knight there. Develop with ...Nc6 and keep pressure on the center.",
+        "focus": ["d3", "e4"],
+        "arrows": [["d3", "e4", "threat"]]
+      }
+    ]
+  },
+  {
+    "id": "pawn-fork",
+    "opening": "petrov",
+    "name": "See the pawn fork two moves ahead",
+    "practice": "3.Nc3 · 4.Bc4",
+    "takeaway": "A pawn fork works because a pawn attacks two diagonal squares. Name the two targets before you count on the fork.",
+    "steps": [
+      {
+        "title": "Calculate past the recapture",
+        "moves": "e4 e5 Nf3 Nf6 Nc3 Nc6 Bc4",
+        "prompt": "Suppose you play ...Nxe4 and White recaptures with the c3-knight. What makes that trade work?",
+        "options": [
+          {"label": "My e5-pawn can take the knight on e4.", "feedback": "A pawn captures diagonally. The e5-pawn cannot capture a piece straight in front of it on e4."},
+          {"label": "The d-pawn can attack both the bishop and the knight from d5."},
+          {"label": "White has no knight that can recapture.", "feedback": "The c3-knight reaches e4. The idea only works if you can explain what happens after that recapture."}
+        ],
+        "answer": 1,
+        "explanation": "If the c3-knight takes on e4, ...d5 attacks it and the bishop on c4 at the same time. You have a way to recover the piece. The tactic depends on the bishop being on c4.",
+        "focus": ["c4", "e4"],
+        "arrows": [["d7", "d5", "idea"], ["d5", "c4", "threat"], ["d5", "e4", "threat"]]
+      },
+      {
+        "title": "Look at the fork on the board",
+        "prompt": "Compare the moment before the pawn push with the position after it.",
+        "examples": [
+          {
+            "label": "Before ...d5",
+            "moves": "e4 e5 Nf3 Nf6 Nc3 Nc6 Bc4 Nxe4 Nxe4",
+            "explanation": "White's knight has recaptured on e4. The bishop on c4 and knight on e4 now sit on the two squares a black pawn on d5 attacks.",
+            "focus": ["c4", "e4", "d5"],
+            "arrows": [["d7", "d5", "idea"]]
+          },
+          {
+            "label": "After ...d5",
+            "moves": "e4 e5 Nf3 Nf6 Nc3 Nc6 Bc4 Nxe4 Nxe4 d5",
+            "explanation": "Both pieces are attacked. For example, if the bishop retreats to d3, your pawn can take the e4-knight. White can take that pawn back with the bishop. Each side has lost a knight and a pawn.",
+            "focus": ["c4", "d5", "e4"],
+            "arrows": [["d5", "c4", "threat"], ["d5", "e4", "threat"]]
+          }
+        ]
+      },
+      {
+        "title": "Tell a fork from a tempo",
+        "moves": "e4 e5 Nf3 Nf6 Bc4 Nxe4 d3 Nf6 Nxe5 d5",
+        "prompt": "Here the white knight is on e5. What does your pawn on d5 actually attack?",
+        "options": [
+          {"label": "The c4-bishop and e5-knight.", "feedback": "Look at the ranks. The pawn attacks one rank forward, so e5 is beside it and out of its reach."},
+          {"label": "The e5-knight only.", "feedback": "The knight is beside the pawn. Trace the two diagonals from d5 toward White's side of the board."},
+          {"label": "The c4-bishop. The other square it attacks is e4, which is empty."}
+        ],
+        "answer": 2,
+        "explanation": "...d5 attacks the bishop and makes White spend time moving it. Here it gains a tempo against one piece. The earlier position was a fork because the knight stood on e4.",
+        "focus": ["c4", "e4", "e5"],
+        "arrows": [["d5", "c4", "threat"], ["d5", "e4", "threat"]]
+      }
+    ]
+  },
+  {
+    "id": "spot-the-threat",
+    "opening": "bishop",
+    "name": "Check what the last move attacked",
+    "practice": "2...Nf6 · 3...d5 hits your bishop",
+    "takeaway": "Before your next development move, trace the squares the opponent's last move now attacks. Deal with the threat, then return to your plan.",
+    "steps": [
+      {
+        "title": "Pause before developing",
+        "moves": "e4 e5 Bc4 Nf6 d3 d5",
+        "prompt": "You were about to develop your knight. What new threat does ...d5 create?",
+        "options": [
+          {"label": "Black can take my bishop on c4."},
+          {"label": "Black's pawn is checking my king.", "feedback": "The king is on e1. From d5, the black pawn attacks c4 and e4. Which of your pieces is on one of those squares?"},
+          {"label": "Black can take my knight on g1.", "feedback": "The g1-knight is too far away. Look one diagonal step forward from d5."}
+        ],
+        "answer": 0,
+        "explanation": "The d5-pawn now attacks both c4 and e4. Your bishop on c4 is the more valuable target. Taking the pawn with exd5 removes the attack so you can develop next.",
+        "focus": ["c4", "d5", "e4"],
+        "arrows": [["d5", "c4", "threat"], ["d5", "e4", "threat"], ["e4", "d5", "idea"]]
+      },
+      {
+        "title": "Compare developing now with answering first",
+        "prompt": "Look for your c4-bishop in each line.",
+        "examples": [
+          {
+            "label": "Answer first",
+            "moves": "e4 e5 Bc4 Nf6 d3 d5 exd5 Nxd5",
+            "explanation": "You traded e-pawn for d-pawn and kept the bishop. Nf3 can now develop a piece and prepare castling.",
+            "focus": ["c4", "d5"],
+            "arrows": [["g1", "f3", "idea"]]
+          },
+          {
+            "label": "Develop right away",
+            "moves": "e4 e5 Bc4 Nf6 d3 d5 Nf3 dxc4",
+            "explanation": "Nf3 followed the original plan, but the bishop was still attacked. Black could take it on c4.",
+            "focus": ["c4"],
+            "arrows": [["d5", "c4", "threat"]]
+          }
+        ]
+      },
+      {
+        "title": "Find the threat from a different piece",
+        "moves": "e4 e5 Bc4 Nc6 Nf3 Na5",
+        "prompt": "Black's knight jumped to a5. You want to move your c4-bishop. Which square takes it out of the knight's reach?",
+        "options": [
+          {"label": "b3.", "feedback": "A knight on a5 can jump to both c4 and b3. Trace those two L-shapes."},
+          {"label": "e2."},
+          {"label": "Leave it on c4.", "feedback": "The knight can jump from a5 to c4 and take your bishop. Look for a retreat outside both attacks."}
+        ],
+        "answer": 1,
+        "explanation": "Be2 gets the bishop away. The a5-knight attacks c4 and b3, so a retreat to b3 would leave the same piece under attack. Name the attack squares before choosing a retreat.",
+        "focus": ["c4", "b3", "e2"],
+        "arrows": [["a5", "c4", "threat"], ["a5", "b3", "threat"], ["c4", "e2", "idea"]]
+      }
+    ]
+  },
+  {
+    "id": "break-the-pin",
+    "opening": "qgd",
+    "name": "Spot and break a pin",
+    "practice": "3.Nc3 · 4.Bg5",
+    "takeaway": "When an opposing bishop lines up with one of your pieces, look beyond that piece. What would the bishop hit if the piece moved?",
+    "steps": [
+      {
+        "title": "Look through the knight",
+        "moves": "d4 d5 c4 e6 Nc3 Nf6 Bg5",
+        "prompt": "White's bishop on g5 attacks your f6-knight. What valuable piece sits behind it on the same diagonal?",
+        "options": [
+          {"label": "My king on e8.", "feedback": "The bishop's diagonal runs g5, f6, e7, d8. Your king is on e8, one file away from the end of that diagonal."},
+          {"label": "My queen on d8."},
+          {"label": "My rook on h8.", "feedback": "Trace the diagonal from g5 through f6. It goes toward e7 and d8."}
+        ],
+        "answer": 1,
+        "explanation": "The queen is behind the knight. The knight can legally move, but White could then capture the queen. This is a pin to the queen. Placing your bishop on e7 shields the queen and prepares castling.",
+        "focus": ["f6", "e7", "d8"],
+        "arrows": [["g5", "d8", "threat"]]
+      },
+      {
+        "title": "Compare blocking the line and moving the knight",
+        "prompt": "Follow the diagonal from g5 toward d8.",
+        "examples": [
+          {
+            "label": "Shield the queen",
+            "moves": "d4 d5 c4 e6 Nc3 Nf6 Bg5 Be7",
+            "explanation": "The e7-bishop stands between the knight and queen. White's bishop can still capture the knight, but moving the knight no longer exposes the queen directly.",
+            "focus": ["f6", "e7", "d8"],
+            "arrows": [["g5", "e7", "threat"], ["f8", "e7", "idea"]]
+          },
+          {
+            "label": "Leave the line open",
+            "moves": "d4 d5 c4 e6 Nc3 Nf6 Bg5 Ng8 Bxd8",
+            "explanation": "Retreating the knight to g8 opened the whole diagonal. White took the queen. Your king can take back on d8, but that trades a queen for a bishop.",
+            "focus": ["d8"],
+            "arrows": [["g5", "d8", "threat"]]
+          }
+        ]
+      },
+      {
+        "title": "Check whether the pin still matters",
+        "moves": "e4 e5 Nf3 Nf6 d3 Be7 Bg5",
+        "prompt": "The same bishop move appears in the Petrov, but you already played ...Be7. If the f6-knight moves, what does the white bishop see first?",
+        "options": [
+          {"label": "The queen on d8.", "feedback": "Trace g5–f6–e7–d8. There is a black piece on e7 before the queen."},
+          {"label": "The king on e8.", "feedback": "The diagonal ends on d8, and e7 comes before it. Identify the piece on e7."},
+          {"label": "The bishop on e7."}
+        ],
+        "answer": 2,
+        "explanation": "The e7-bishop shields the queen. The knight is no longer pinned to the queen, though you should still consider whether trading bishops on e7 is good. Check the pieces on the line every time.",
+        "focus": ["f6", "e7", "d8"],
+        "arrows": [["g5", "e7", "threat"]]
+      }
+    ]
+  }
+]

@@ -6,6 +6,7 @@ The app includes ten Petrov Defense variations, four Bishop's Opening variations
 
 | Practice mode | What it does |
 | --- | --- |
+| Learn concepts | Explain a threat, compare positions with board arrows, and apply the same idea to a different reply. |
 | Mix replies | Play each variation in shuffled order. |
 | Choose a variation | Start at the key position of a selected line. |
 | Review missed moves | Retry positions where you tried a different legal move or used a hint. |
@@ -34,6 +35,8 @@ python opening-practice/build_repertoire.py app/repertoire.js
 ```
 
 The generator checks legality and rejects inconsistent recommendations for the same position. The generated file is included so the app runs directly from a checkout. The separate PGN files contain the original starter lines for importing into another trainer.
+
+Concept lessons live in [opening-practice/lessons.json](opening-practice/lessons.json). After changing a question, example, or board annotation, run `python opening-practice/build_lessons.py` to regenerate the lesson positions.
 
 ## Artwork
 
