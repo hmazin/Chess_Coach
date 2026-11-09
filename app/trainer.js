@@ -186,9 +186,10 @@
     moves.textContent = position.frame.history;
     boardQuestion.textContent = lesson.finished ? "" : step.prompt;
     boardQuestion.hidden = lesson.finished;
-    boardInstructions.textContent = comparing || lesson.revealed ? "Follow the arrows on the board." : "Use the position to answer.";
-    turn.textContent = lesson.finished ? "Lesson complete" : comparing ? "Compare plans" : "Find the idea";
-    stepLabel.textContent = lesson.finished ? "" : "Position " + (lesson.index + 1) + " of " + lesson.lesson.steps.length;
+    boardInstructions.textContent = comparing ? "Select a move or line in the Coach panel." :
+      lesson.revealed ? "Follow the arrows on the board." : "Use the position to answer.";
+    turn.textContent = lesson.finished ? "Lesson complete" : comparing ? "Explore the line" : "Find the idea";
+    stepLabel.textContent = lesson.finished ? "" : "Step " + (lesson.index + 1) + " of " + lesson.lesson.steps.length;
     lessonTitle.textContent = lesson.finished ? "Take this to your next game" : step.title;
     feedback.textContent = lesson.explanation;
     action.textContent = lesson.action;

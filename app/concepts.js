@@ -25,7 +25,7 @@ class ConceptLesson {
   get action() {
     if (this.finished) return "Practice this idea";
     if (!this.step.examples && !this.revealed) return "Show explanation";
-    return this.index === this.lesson.steps.length - 1 ? "Finish lesson" : "Next position";
+    return this.index === this.lesson.steps.length - 1 ? "Finish lesson" : "Next step";
   }
 
   select(index) {

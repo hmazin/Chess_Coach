@@ -4,32 +4,58 @@
     "opening": "petrov",
     "name": "Chase, then recapture",
     "practice": "3.Nxe5 · 5.d4",
-    "takeaway": "When a piece takes your pawn, check whether you can gain time by attacking the piece first. Look at where it goes before deciding what to recapture.",
+    "takeaway": "In this Petrov position, chase the e5-knight with ...d6 first. If it goes back to f3, your f6-knight can take on e4. If White plays something else, check what that move threatens.",
     "steps": [
       {
-        "title": "What changed after White took on e5?",
-        "moves": "e4 e5 Nf3 Nf6 Nxe5",
-        "prompt": "White's knight just took your e5-pawn. What does ...d6 accomplish?",
-        "options": [
-          {"label": "It attacks the knight before I try to recover the pawn."},
-          {"label": "It recaptures the lost pawn.", "feedback": "The d-pawn moves onto an empty square. Look at the two squares a black pawn on d6 could capture."},
-          {"label": "It defends the knight on f6.", "feedback": "A black pawn on d6 attacks c5 and e5. Which of those squares holds a white piece?"}
-        ],
-        "answer": 0,
-        "explanation": "The d-pawn lands on d6 and attacks e5 diagonally. White has to account for that threat. If the knight returns to f3, you can look at taking the e4-pawn with your f6-knight.",
-        "focus": ["d6", "e5"],
-        "arrows": [["d7", "d6", "idea"], ["d6", "e5", "threat"]]
+        "title": "Chase the knight, then take the pawn",
+        "prompt": "Why play ...d6 before taking on e4? Select each move to see what it changes.",
+        "examples": [
+          {
+            "label": "Start · White takes on e5",
+            "moves": "e4 e5 Nf3 Nf6 Nxe5",
+            "explanation": "White's knight on e5 just took your pawn. Your knight on f6 can take White's pawn on e4, but first you can use the d7-pawn to make White's knight move.",
+            "focus": ["e5", "d7"]
+          },
+          {
+            "label": "3...d6 · Black attacks the knight",
+            "moves": "e4 e5 Nf3 Nf6 Nxe5 d6",
+            "explanation": "Your pawn is now on d6. It can capture diagonally on e5, where White's knight is sitting. White often answers by moving that knight back to f3.",
+            "focus": ["d6", "e5"],
+            "arrows": [["d6", "e5", "threat"]]
+          },
+          {
+            "label": "4.Nf3 · White retreats",
+            "moves": "e4 e5 Nf3 Nf6 Nxe5 d6 Nf3",
+            "explanation": "White's knight is back on f3. From there it cannot defend the e4-pawn. Your knight on f6 can now jump to e4 and take it.",
+            "focus": ["f3", "e4"],
+            "arrows": [["f6", "e4", "idea"]]
+          },
+          {
+            "label": "4...Nxe4 · Black takes the pawn",
+            "moves": "e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4",
+            "explanation": "Your knight took White's e4-pawn. Each side has lost one pawn. If White follows with 5.d4, a common reply is ...d5, which supports your knight on e4.",
+            "focus": ["e4", "d6"],
+            "arrows": [["f6", "e4", "idea"]]
+          }
+        ]
       },
       {
-        "title": "Compare the two plans",
-        "prompt": "Switch between the lines. Look at the pawn count and what Black gets in return.",
+        "title": "What if Black plays something else?",
+        "prompt": "Compare what White can do after each of Black's three choices.",
         "examples": [
           {
             "label": "Chase first",
             "moves": "e4 e5 Nf3 Nf6 Nxe5 d6 Nf3 Nxe4",
-            "explanation": "After ...d6, White retreated to f3. Black then took on e4. Each side has lost one pawn. Black's next job is to support the knight on e4 and develop.",
+            "explanation": "After ...d6, White's knight left e5. Black then took on e4. Compare where White's knight sits in the line where Black takes immediately.",
             "focus": ["d6", "e4"],
             "arrows": [["f6", "e4", "idea"]]
+          },
+          {
+            "label": "Take on e4 immediately",
+            "moves": "e4 e5 Nf3 Nf6 Nxe5 Nxe4 Qe2 Nf6 Nc6+",
+            "explanation": "Black took on e4 immediately. White played Qe2, attacking the knight on e4. If Black retreats it to f6, White can jump from e5 to c6, as shown. White's queen now gives check down the e-file, and the c6-knight attacks Black's queen on d8. For example, after ...Be7, White can take the queen with Nxd8.",
+            "focus": ["e2", "e8", "c6", "d8"],
+            "arrows": [["e2", "e8", "threat"], ["c6", "d8", "threat"]]
           },
           {
             "label": "Offer the pawn",
