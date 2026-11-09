@@ -18,6 +18,11 @@
   const learnButton = root.querySelector("[data-learn]");
   const lessonTitle = root.querySelector("[data-lesson-title]");
   const lessonChoices = root.querySelector("[data-lesson-choices]");
+  const variationGuide = root.querySelector("[data-variation-guide]");
+  const variationTitle = variationGuide.querySelector("[data-variation-title]");
+  const variationExplanation = variationGuide.querySelector("[data-variation-explanation]");
+  const variationBack = variationGuide.querySelector("[data-variation-back]");
+  const variationNext = variationGuide.querySelector("[data-variation-next]");
   const feedback = root.querySelector("[data-feedback]");
   const reviewCount = root.querySelector("[data-review-count]");
   const coverageLabel = root.querySelector("[data-coverage]");
@@ -25,7 +30,7 @@
   const storageWarning = root.querySelector("[data-storage-warning]");
   const storagePrefix = "chess-coach:v1:";
   const descriptions = {
-    learn: "Compare positions and learn why a move works.",
+    learn: "Explore each variation move by move or study a concept.",
     mixed: "Play against different replies in shuffled order.",
     study: "Pick a reply and learn the plan from that position.",
     review: "Retry moves where you needed a hint or tried another line.",
@@ -181,20 +186,30 @@
   function renderLesson() {
     const step = lesson.step;
     const position = lesson.position;
+    const walkthrough = lesson.lesson.walkthrough;
     const comparing = Boolean(step.examples);
     const showAnnotations = comparing || lesson.revealed;
     renderBoard(position.frame, showAnnotations ? position.focus : [], showAnnotations ? position.arrows : []);
     moves.textContent = position.frame.history;
-    boardQuestion.textContent = lesson.finished ? "" : step.prompt;
+    boardQuestion.textContent = walkthrough ? lesson.lesson.name : lesson.finished ? "" : step.prompt;
     boardQuestion.hidden = lesson.finished;
-    boardInstructions.textContent = comparing ? "Select a move or line in the Coach panel." :
-      lesson.revealed ? "Follow the arrows on the board." : "Use the position to answer.";
-    turn.textContent = lesson.finished ? "Lesson complete" : comparing ? "Explore the line" : "Find the idea";
+    boardInstructions.textContent = walkthrough ? "The last move is highlighted." :
+      comparing ? "Select a move or line in the Coach panel." :
+        lesson.revealed ? "Follow the arrows on the board." : "Use the position to answer.";
+    turn.textContent = lesson.finished ? "Lesson complete" : walkthrough || comparing ? "Explore the line" : "Find the idea";
     stepLabel.textContent = lesson.finished ? "" : "Step " + (lesson.index + 1) + " of " + lesson.lesson.steps.length;
+    lessonChoices.hidden = lesson.finished || walkthrough;
+    if (walkthrough) {
+      variationTitle.textContent = step.title;
+      variationExplanation.textContent = lesson.explanation;
+      variationBack.disabled = lesson.index === 0;
+      variationNext.textContent = lesson.action;
+      return;
+    }
+
     lessonTitle.textContent = lesson.finished ? "Take this to your next game" : step.title;
     feedback.textContent = lesson.explanation;
     action.textContent = lesson.action;
-    lessonChoices.hidden = lesson.finished;
     if (lesson.finished) return;
 
     if (displayedStep !== step) {
@@ -225,6 +240,7 @@
 
   function render() {
     const learning = mode.value === "learn";
+    const walkthrough = learning && lesson.lesson.walkthrough;
     const reviewing = mode.value === "review";
     const count = reviewEntries().length;
     root.classList.toggle("is-learning", learning);
@@ -232,8 +248,11 @@
     modeDescription.textContent = descriptions[mode.value];
     lineControl.hidden = !learning && mode.value !== "study";
     lineLabel.textContent = learning ? "Lesson" : "Variation";
-    learnButton.hidden = learning || !availableLessons().length;
-    lessonTitle.hidden = !learning;
+    learnButton.hidden = learning;
+    lessonTitle.hidden = !learning || walkthrough;
+    feedback.hidden = walkthrough;
+    action.hidden = walkthrough;
+    variationGuide.hidden = !walkthrough;
     reviewCount.textContent = count ? count + (count === 1 ? " move to review" : " moves to review") : "No moves to review yet";
     coverage.max = opening.lines.length;
     coverage.value = opening.lines.filter(line => practiced.has(lineKey(opening, line))).length;
@@ -285,7 +304,8 @@
     selected = "";
     lastAttempt = null;
     if (mode.value === "learn") {
-      lesson = new ConceptLesson(availableLessons()[lineSelect.selectedIndex]);
+      const lessons = [...availableLessons(), ...opening.lines.map(line => line.lesson)];
+      lesson = new ConceptLesson(lessons.find(item => item.id === lineSelect.value));
       reviewEmpty = false;
       render();
       return;
@@ -314,14 +334,21 @@
   }
 
   function selectMode(selection) {
-    const lessons = availableLessons();
-    mode.querySelector('[value="learn"]').disabled = !lessons.length;
-    if (mode.value === "learn" && !lessons.length) mode.value = "mixed";
-    const options = mode.value === "learn"
-      ? lessons.map(lesson => new Option(lesson.name, lesson.id))
-      : opening.lines.map(line => new Option(line.name));
-    lineSelect.replaceChildren(...options);
-    if (options.some(option => option.value === selection)) lineSelect.value = selection;
+    if (mode.value === "learn") {
+      const groups = [
+        ["Concept lessons", availableLessons()],
+        ["Variation walkthroughs", opening.lines.map(line => line.lesson)],
+      ];
+      lineSelect.replaceChildren(...groups.filter(([, lessons]) => lessons.length).map(([name, lessons]) => {
+        const group = document.createElement("optgroup");
+        group.label = name;
+        group.append(...lessons.map(lesson => new Option(lesson.name, lesson.id)));
+        return group;
+      }));
+    } else {
+      lineSelect.replaceChildren(...opening.lines.map(line => new Option(line.name)));
+    }
+    if ([...lineSelect.options].some(option => option.value === selection)) lineSelect.value = selection;
     start();
   }
 
@@ -416,25 +443,31 @@
     savePreferences();
   });
   learnButton.addEventListener("click", () => {
-    const lessons = availableLessons();
-    const relevant = lessons.find(lesson => lesson.practice === line.name) ?? lessons[0];
     mode.value = "learn";
-    selectMode(relevant.id);
+    selectMode(line.lesson.id);
     savePreferences();
     boardQuestion.scrollIntoView({block: "nearest"});
   });
+  function advanceLesson() {
+    if (lesson.readyToPractice) {
+      mode.value = "study";
+      selectMode(lesson.lesson.practice);
+      savePreferences();
+    } else {
+      const previous = lesson.index;
+      lesson.advance();
+      renderLesson();
+      if (!lesson.lesson.walkthrough && previous !== lesson.index) boardQuestion.scrollIntoView({block: "nearest"});
+    }
+  }
+  variationNext.addEventListener("click", advanceLesson);
+  variationBack.addEventListener("click", () => {
+    lesson.back();
+    renderLesson();
+  });
   action.addEventListener("click", () => {
     if (mode.value === "learn") {
-      if (lesson.finished) {
-        mode.value = "study";
-        selectMode(lesson.lesson.practice);
-        savePreferences();
-      } else {
-        const previous = lesson.index;
-        lesson.advance();
-        renderLesson();
-        if (previous !== lesson.index) boardQuestion.scrollIntoView({block: "nearest"});
-      }
+      advanceLesson();
     } else if (reviewEmpty) {
       mode.value = "mixed";
       start();

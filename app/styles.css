@@ -198,6 +198,8 @@ progress::-moz-progress-bar { background: var(--accent); }
 .file { left: 4px; bottom: 2px; }
 .rank { right: 4px; top: 2px; }
 .board-footer { margin-top: 11px; align-items: start; }
+.variation-guide { display: grid; gap: 10px; margin-top: 12px; }
+.variation-guide .feedback { min-height: 0; margin-top: 5px; }
 
 .feedback { color: #dce7db; line-height: 1.5; font-size: .95rem; min-height: 2.85em; }
 .coach-actions { display: flex; flex-wrap: wrap; gap: 8px; }

@@ -33,6 +33,8 @@ def collect_positions(directory):
             for san in moves:
                 if board.turn == side:
                     remember(board, board.parse_san(san))
+                else:
+                    remember(board)
                 board.push_san(san)
             remember(board)
 

@@ -29,40 +29,70 @@ def snapshot(board):
 
 def build_line(opening, line, recommendations):
     side = {"White": chess.WHITE, "Black": chess.BLACK}[opening["side"]]
+    study_from = line.get("studyFrom", 0)
+    teaching = line["teaching"]
+    teach_from = teaching.get("from", study_from)
+    reply_notes = teaching["replies"]
+    if not 0 <= teach_from < len(line["notes"]) or len(reply_notes) != len(line["notes"]) - teach_from - 1:
+        raise ValueError(f"Invalid teaching steps in {line['name']}")
+    if not all(isinstance(note, str) and note.strip() for note in [teaching["intro"], *reply_notes]):
+        raise ValueError(f"Missing teaching explanation in {line['name']}")
+    replies = iter(reply_notes)
+
     board = chess.Board()
     for san in opening["setup"].split():
+        last_san = numbered_san(board, san)
         board.push_san(san)
 
     frames = []
+    steps = []
     for san in line["moves"].split():
         move = board.parse_san(san)
-        if board.turn == side:
+        played_by_student = board.turn == side
+        notation = numbered_san(board, san)
+        if played_by_student:
             key = opening["id"] + ":" + " ".join(board.fen().split()[:4])
             if recommendations.setdefault(key, move) != move:
                 raise ValueError(f"Conflicting replies for {opening['name']} at {board.fen()}")
             if len(frames) >= len(line["notes"]):
                 raise ValueError(f"Missing coaching note in {line['name']}")
             hint, reason = line["notes"][len(frames)]
-            frames.append({
-                **snapshot(board),
+            before = snapshot(board)
+            frame = {
+                **before,
                 "position": sha256(key.encode()).hexdigest()[:12],
                 "move": move.uci(),
-                "san": numbered_san(board, san),
+                "san": notation,
                 "hint": hint,
                 "reason": reason,
                 "legal": [legal.uci() for legal in board.legal_moves],
-            })
+            }
+            if len(frames) == teach_from:
+                steps.append({"title": f"After {last_san}", "explanation": teaching["intro"], "frame": before})
+            frames.append(frame)
         elif frames:
-            frames[-1]["reply"] = numbered_san(board, san)
+            frames[-1]["reply"] = notation
         board.push(move)
+        if steps:
+            actor = "Your move" if played_by_student else "Opponent's reply"
+            steps.append({
+                "title": f"{actor} · {notation}",
+                "explanation": reason if played_by_student else next(replies),
+                "frame": snapshot(board),
+            })
+        last_san = notation
 
-    study_from = line.get("studyFrom", 0)
     if len(frames) != len(line["notes"]) or not 0 <= study_from < len(frames):
         raise ValueError(f"Invalid practice steps in {line['name']}")
     if board.turn == side:
         raise ValueError(f"{line['name']} must end with the student's move")
     frames.append(snapshot(board))
-    return {"name": line["name"], "studyFrom": study_from, "frames": frames}
+    name = line["name"]
+    lesson = {
+        "id": f"variation:{name}", "name": name, "practice": name,
+        "walkthrough": True, "steps": steps,
+    }
+    return {"name": name, "studyFrom": study_from, "frames": frames, "lesson": lesson}
 
 
 def main():

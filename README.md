@@ -2,11 +2,11 @@
 
 Chess Coach is an offline opening trainer for blitz. Open [app/index.html](app/index.html) in a current browser. No installation, account, or internet connection is needed to practice.
 
-The app includes ten Petrov Defense variations, four Bishop's Opening variations, and three Queen's Gambit Declined variations. Your opponent plays replies from the prepared repertoire. Click or tap a piece and its destination to play. With a keyboard, use the arrow keys to move between squares and Enter or Space to select one.
+The app includes fifteen Petrov Defense variations, four Bishop's Opening variations, and three Queen's Gambit Declined variations. Your opponent plays replies from the prepared repertoire. Click or tap a piece and its destination to play. With a keyboard, use the arrow keys to move between squares and Enter or Space to select one.
 
 | Practice mode | What it does |
 | --- | --- |
-| Learn concepts | Explain a threat, compare positions with board arrows, and apply the same idea to a different reply. |
+| Learn openings | Step through any practice variation with a move-by-move explanation, or choose a concept lesson to compare positions. |
 | Mix replies | Play each variation in shuffled order. |
 | Choose a variation | Start at the key position of a selected line. |
 | Review missed moves | Retry positions where you tried a different legal move or used a hint. |
@@ -33,7 +33,7 @@ Run `node scripts/build.mjs` to generate the static site in `dist/`. The build u
 
 ## Add or revise an opening
 
-Edit [opening-practice/repertoire.json](opening-practice/repertoire.json). Each variation contains legal moves in standard algebraic notation and one hint and explanation for each move the student plays. The optional `studyFrom` value sets which decision starts a chosen variation, counting from zero.
+Edit [opening-practice/repertoire.json](opening-practice/repertoire.json). Each variation contains legal moves in standard algebraic notation and one hint and explanation for each move the student plays. The `teaching` entry adds an introduction and an explanation of each opponent reply in the walkthrough. The optional `studyFrom` value sets which decision starts practice, counting from zero. Use `teaching.from` to start the walkthrough at a different decision.
 
 Regenerate the app's repertoire after making a change.
 

@@ -43,7 +43,7 @@
         <label>
           Practice mode
           <select data-mode aria-describedby="mode-description">
-            <option value="learn">Learn concepts</option>
+            <option value="learn">Learn openings</option>
             <option value="mixed">Mix replies</option>
             <option value="study">Choose a variation</option>
             <option value="review">Review missed moves</option>
@@ -91,6 +91,16 @@
           <p data-board-instructions>Choose a piece, then its destination.</p>
           <p class="step" data-step></p>
         </div>
+        <div class="variation-guide" data-variation-guide hidden>
+          <div aria-live="polite">
+            <h3 class="lesson-title" data-variation-title></h3>
+            <p class="feedback" data-variation-explanation></p>
+          </div>
+          <div class="coach-actions">
+            <button class="action secondary-action" type="button" data-variation-back>Previous move</button>
+            <button class="action" type="button" data-variation-next>Next move</button>
+          </div>
+        </div>
       </section>
 
       <section class="panel coach-panel" aria-labelledby="coach-title">
@@ -126,7 +136,7 @@
         <p class="feedback" aria-live="polite" data-feedback></p>
         <div class="coach-actions">
           <button class="action" type="button" data-action>Hint</button>
-          <button class="action secondary-action" type="button" data-learn>Learn the idea</button>
+          <button class="action secondary-action" type="button" data-learn>Learn this variation</button>
         </div>
         <div class="move-history">
           <h3>Move history</h3>

@@ -18,11 +18,16 @@ class ConceptLesson {
 
   get explanation() {
     if (this.finished) return this.lesson.takeaway;
-    if (this.step.examples || this.revealed) return this.position.explanation;
+    if (!this.step.options || this.revealed) return this.position.explanation;
     return this.step.options[this.choice]?.feedback ?? "Look at the board, then choose a reason.";
   }
 
+  get readyToPractice() {
+    return this.finished || (this.lesson.walkthrough && this.index === this.lesson.steps.length - 1);
+  }
+
   get action() {
+    if (this.lesson.walkthrough) return this.readyToPractice ? "Practice this variation" : "Next move";
     if (this.finished) return "Practice this idea";
     if (!this.step.examples && !this.revealed) return "Show explanation";
     return this.index === this.lesson.steps.length - 1 ? "Finish lesson" : "Next step";
@@ -37,7 +42,7 @@ class ConceptLesson {
   }
 
   advance() {
-    if (!this.step.examples && !this.revealed) {
+    if (this.step.options && !this.revealed) {
       this.revealed = true;
     } else if (this.index + 1 === this.lesson.steps.length) {
       this.finished = true;
@@ -47,5 +52,9 @@ class ConceptLesson {
       this.example = 0;
       this.revealed = false;
     }
+  }
+
+  back() {
+    if (this.lesson.walkthrough && this.index > 0) this.index--;
   }
 }
