@@ -91,7 +91,7 @@ export default async function handler(request, response) {
   const conversation = turns.slice(-6)
     .filter(message => message && ["user", "assistant"].includes(message.role) && typeof message.content === "string")
     .map(message => ({type: "message", role: message.role, content: message.content.slice(0, 1600)}));
-  const oidc = process.env.VERCEL_OIDC_TOKEN;
+  const oidc = request.headers["x-vercel-oidc-token"] ?? process.env.VERCEL_OIDC_TOKEN;
   const model = process.env.CHESS_COACH_MODEL;
   if (!oidc || !model?.startsWith("openai/")) {
     return answer(response, 503, {error: "The OpenAI connection isn’t configured yet."});
