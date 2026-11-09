@@ -13,6 +13,12 @@ The app includes fifteen Petrov Defense variations, four Bishop's Opening variat
 
 Your progress and preferences are stored in the browser on the device where you play.
 
+## Explore both sides
+
+Open **Explore both sides** under any study board. You can play White and Black, choose one of the live Stockfish suggestions, and use **Back one move** to try a different reply. Previously played replies remain available at that position while the exploration is open. **Explain last move** asks the private AI coach about the current branch and includes checked Stockfish continuations.
+
+Stockfish runs on your device in the hosted app, including offline after the app has cached its files. The exploration uses the [Stockfish.js 19.0.1](https://github.com/nmrugg/stockfish.js/tree/v19.0.1) single-threaded lite build under the GPLv3 and [chess.js](https://github.com/jhlywa/chess.js) under the BSD 2-Clause license. The hosted files include both license texts.
+
 ## Ask the AI coach
 
 In the hosted app, open **Ask the AI coach** beside the board and unlock it with your personal access code. Ask what a move achieves, what the opponent might play next, or why a move you tried gives the opponent a chance. You can ask follow-up questions while looking at the same position.
@@ -29,7 +35,7 @@ Each device keeps its own practice history. The hosted app serves the training f
 
 ## Build for hosting
 
-Run `node scripts/build.mjs` to generate the static site in `dist/`. The build uses the checked-in training repertoire and versions the offline cache from the app's contents. Vercel uses this command automatically through [vercel.json](vercel.json).
+Run `npm ci` and then `node scripts/build.mjs` to generate the static site in `dist/`. The build uses the checked-in training repertoire and versions the offline cache from the app's contents. Vercel uses this build command automatically through [vercel.json](vercel.json).
 
 ## Add or revise an opening
 

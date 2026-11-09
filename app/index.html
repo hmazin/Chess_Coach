@@ -12,8 +12,10 @@
   <script defer src="repertoire.js"></script>
   <script defer src="lesson-data.js"></script>
   <script defer src="concepts.js"></script>
+  <script defer src="board.js"></script>
   <script defer src="coach.js"></script>
   <script defer src="trainer.js"></script>
+  <script defer src="explore.js"></script>
   <script defer src="pwa.js"></script>
 </head>
 <body>
@@ -34,7 +36,7 @@
     </header>
 
     <main class="workspace">
-      <section class="panel setup-panel" aria-labelledby="setup-title">
+      <section class="panel setup-panel" aria-labelledby="setup-title" data-trainer-setup>
         <h2 id="setup-title">Practice setup</h2>
         <label>
           Opening
@@ -63,6 +65,11 @@
           <p class="secondary" data-review-count></p>
         </div>
       </section>
+      <section class="panel setup-panel" aria-labelledby="explore-title" data-explore-setup hidden>
+        <h2 id="explore-title">Explore both sides</h2>
+        <p class="secondary">Play any legal move. Go back to try a different reply, or ask Stockfish to play one move.</p>
+        <a class="text-link" href="./">Back to lessons</a>
+      </section>
 
       <section class="panel board-panel" aria-labelledby="opening-title">
         <div class="board-heading">
@@ -90,6 +97,34 @@
         <div class="board-footer">
           <p data-board-instructions>Choose a piece, then its destination.</p>
           <p class="step" data-step></p>
+        </div>
+        <div class="explore-entry" data-explore-entry>
+          <a class="text-link" data-explore-link href="?explore=">Explore both sides</a>
+        </div>
+        <div class="explore-guide" data-explore-guide hidden>
+          <div class="coach-actions">
+            <button class="action secondary-action" type="button" data-explore-back>Back one move</button>
+            <button class="action" type="button" data-explore-best>Play Stockfish reply</button>
+            <button class="action secondary-action" type="button" data-explore-flip>Flip board</button>
+          </div>
+          <div class="coach-actions" aria-label="Choose a promotion piece" data-explore-promotion hidden>
+            <button class="action secondary-action" type="button" data-promote="q">Queen</button>
+            <button class="action secondary-action" type="button" data-promote="r">Rook</button>
+            <button class="action secondary-action" type="button" data-promote="b">Bishop</button>
+            <button class="action secondary-action" type="button" data-promote="n">Knight</button>
+          </div>
+          <div data-explore-branches hidden>
+            <h3 class="lesson-title">Saved replies from here</h3>
+            <div class="coach-actions" data-explore-branch-buttons></div>
+          </div>
+          <div class="explore-analysis">
+            <h3 class="lesson-title">Stockfish analysis</h3>
+            <p class="secondary" role="status" data-explore-status>Loading Stockfish…</p>
+            <p class="feedback" data-explore-comparison hidden></p>
+            <div class="lesson-choices" data-explore-options></div>
+            <button class="action secondary-action" type="button" data-explore-explain hidden>Explain last move</button>
+            <p class="secondary">Stockfish 19 · <a class="text-link" href="vendor/stockfish-license.txt">License</a> · <a class="text-link" href="https://github.com/nmrugg/stockfish.js/tree/v19.0.1">Source</a></p>
+          </div>
         </div>
         <div class="variation-guide" data-variation-guide hidden>
           <div aria-live="polite">

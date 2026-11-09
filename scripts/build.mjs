@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { cp, lstat, readdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
+import { cp, lstat, mkdir, readdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -7,6 +7,13 @@ const root = await realpath(fileURLToPath(new URL("..", import.meta.url)));
 const source = join(root, "app");
 const output = resolve(root, "dist");
 const template = await readFile(new URL("./sw-template.js", import.meta.url), "utf8");
+const vendor = new Map([
+  ["vendor/chess.js", "chess.js/dist/esm/chess.js"],
+  ["vendor/chess-license.txt", "chess.js/LICENSE"],
+  ["vendor/stockfish-19-lite-single.js", "stockfish/bin/stockfish-19-lite-single.js"],
+  ["vendor/stockfish-19-lite-single.wasm", "stockfish/bin/stockfish-19-lite-single.wasm"],
+  ["vendor/stockfish-license.txt", "stockfish/Copying.txt"],
+]);
 
 async function listFiles(directory) {
   const entries = await readdir(directory, {withFileTypes: true});
@@ -20,10 +27,11 @@ async function listFiles(directory) {
   return files;
 }
 
-const files = (await listFiles(source)).sort();
+const files = [...await listFiles(source), ...vendor.keys()].sort();
 const hash = createHash("sha256").update(template);
 for (const path of files) {
-  hash.update(path).update("\0").update(await readFile(join(source, path))).update("\0");
+  const input = vendor.has(path) ? join(root, "node_modules", vendor.get(path)) : join(source, path);
+  hash.update(path).update("\0").update(await readFile(input)).update("\0");
 }
 const version = hash.digest("hex").slice(0, 16);
 // The recovery page must be available from the server even when an old worker is active.
@@ -43,5 +51,7 @@ if (existing) {
   await rm(output, {recursive: true});
 }
 await cp(source, output, {recursive: true});
+await mkdir(join(output, "vendor"), {recursive: true});
+for (const [path, input] of vendor) await cp(join(root, "node_modules", input), join(output, path));
 await writeFile(join(output, "sw.js"), worker);
 console.log("Built Chess Coach " + version + " with " + cached.length + " offline assets.");

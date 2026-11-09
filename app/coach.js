@@ -73,6 +73,13 @@
     why.hidden = !detail.attempted;
   });
 
+  root.addEventListener("coach-question", ({detail}) => {
+    panel.open = true;
+    question.value = detail;
+    panel.scrollIntoView({block: "nearest"});
+    if (unlocked) form.requestSubmit();
+  });
+
   async function checkAccess() {
     if (location.protocol === "file:" || !navigator.onLine) {
       status.textContent = "Open the hosted Chess Coach app while connected to ask a question.";

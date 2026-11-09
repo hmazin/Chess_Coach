@@ -1,5 +1,6 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import analysis from "../opening-practice/coach-positions.json" with { type: "json" };
+import { exploreContext } from "../lib/explore-context.js";
 
 const cookieName = "__Host-chess-coach";
 const sessionSeconds = 30 * 24 * 60 * 60;
@@ -82,18 +83,32 @@ export default async function handler(request, response) {
   if (request.body?.action === "unlock") return unlock(request, response, secret);
   if (!isUnlocked(request, secret)) return answer(response, 401, {error: "Enter your access code to use the coach."});
 
-  const {history, side, attempted, question, turns = []} = request.body ?? {};
-  if (typeof history !== "string" || history.length > 350 ||
-      typeof question !== "string" || !question.trim() || question.length > 900 || !Array.isArray(turns)) {
+  const {history, side, attempted, exploration, question, turns = []} = request.body ?? {};
+  if (typeof question !== "string" || !question.trim() || question.length > 900 || !Array.isArray(turns)) {
     return answer(response, 400, {error: "Choose a position and enter a question of up to 900 characters."});
   }
-  const key = Object.hasOwn(analysis.histories, history) ? analysis.histories[history] : null;
-  const position = key ? analysis.positions[key] : null;
-  if (!position) return answer(response, 400, {error: "This board position is outside the coach’s checked repertoire."});
-  const move = typeof attempted === "string" && Object.hasOwn(position.moves, attempted) ? attempted : null;
   const conversation = turns.slice(-6)
     .filter(message => message && ["user", "assistant"].includes(message.role) && typeof message.content === "string")
     .map(message => ({type: "message", role: message.role, content: message.content.slice(0, 1600)}));
+  let context, checked;
+  if (exploration !== undefined) {
+    try {
+      ({context, checked} = exploreContext(exploration));
+    } catch {
+      return answer(response, 400, {error: "The coach couldn’t verify this line. Select a legal board position and try again."});
+    }
+  } else {
+    if (typeof history !== "string" || history.length > 350) {
+      return answer(response, 400, {error: "Choose a position from the practice board."});
+    }
+    const key = Object.hasOwn(analysis.histories, history) ? analysis.histories[history] : null;
+    const position = key ? analysis.positions[key] : null;
+    if (!position) return answer(response, 400, {error: "This board position is outside the coach’s checked repertoire."});
+    const move = typeof attempted === "string" && Object.hasOwn(position.moves, attempted) ? attempted : null;
+    context = boardContext(history, position, side, move, question, conversation);
+    checked = [...new Set([move, position.preferred, position.top[0]])].filter(Boolean)
+      .map(uci => position.moves[uci].line);
+  }
   const oidc = request.headers["x-vercel-oidc-token"] ?? process.env.VERCEL_OIDC_TOKEN;
   const model = process.env.CHESS_COACH_MODEL;
   if (!oidc || !model?.startsWith("openai/")) {
@@ -111,7 +126,7 @@ export default async function handler(request, response) {
         reasoning: {effort: "low"},
         max_output_tokens: 1400,
         input: [
-          {type: "message", role: "developer", content: tutor + "\n\n" + boardContext(history, position, side, move, question, conversation)},
+          {type: "message", role: "developer", content: tutor + "\n\n" + context},
           ...conversation,
           {type: "message", role: "user", content: question.trim()},
         ],
@@ -132,8 +147,6 @@ export default async function handler(request, response) {
     const text = (result.output ?? []).flatMap(item => item.content ?? [])
       .filter(part => part.type === "output_text").map(part => part.text).join("\n").trim();
     if (!text) return answer(response, 502, {error: "The coach couldn’t finish its answer. Try a shorter question."});
-    const checked = [...new Set([move, position.preferred, position.top[0]])].filter(Boolean)
-      .map(uci => position.moves[uci].line);
     return answer(response, 200, {text, checked});
   } catch (error) {
     console.error("Chess coach request failed", error.name);
