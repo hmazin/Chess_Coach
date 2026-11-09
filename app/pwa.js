@@ -30,8 +30,56 @@
   });
 
   if ("serviceWorker" in navigator && isSecureContext) {
-    navigator.serviceWorker.register("sw.js")
-      .then(() => navigator.serviceWorker.ready)
+    const workers = navigator.serviceWorker;
+    const update = document.querySelector("[data-update]");
+    let registration;
+    let controller = workers.controller;
+    let reloadRequested = false;
+    let newerController = false;
+
+    function showUpdate() {
+      update.hidden = !newerController && !registration?.waiting;
+      update.textContent = newerController ? "Reload app" : "Update app";
+    }
+
+    update.addEventListener("click", () => {
+      if (newerController) {
+        location.reload();
+      } else if (registration?.waiting) {
+        reloadRequested = true;
+        registration.waiting.postMessage({type: "ACTIVATE_UPDATE"});
+      }
+    });
+
+    workers.addEventListener("controllerchange", () => {
+      const previous = controller;
+      controller = workers.controller;
+      if (!previous || !controller || previous === controller) return;
+      newerController = true;
+      if (reloadRequested) location.reload();
+      else showUpdate();
+    });
+
+    workers.register("sw.js", {updateViaCache: "none"})
+      .then(link => {
+        registration = link;
+        registration.addEventListener("updatefound", () => {
+          registration.installing?.addEventListener("statechange", showUpdate);
+        });
+        showUpdate();
+
+        let lastCheck = Date.now();
+        function checkForUpdate() {
+          if (!navigator.onLine || Date.now() - lastCheck < 60_000) return;
+          lastCheck = Date.now();
+          registration.update().catch(() => {});
+        }
+        document.addEventListener("visibilitychange", () => {
+          if (!document.hidden) checkForUpdate();
+        });
+        window.addEventListener("online", checkForUpdate);
+        return workers.ready;
+      })
       .then(() => { status.textContent = "Ready offline"; })
       .catch(error => console.warn("Offline setup could not finish:", error));
   }

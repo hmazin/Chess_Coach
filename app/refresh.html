@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Update Chess Coach</title>
+  <style>
+    body { margin: 0; background: #171b18; color: #f1f3ed; font: 1rem/1.5 system-ui, sans-serif; }
+    main { max-width: 32rem; margin: 12vh auto 0; padding: 1.25rem; }
+    a { color: #d4e99e; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Update Chess Coach</h1>
+    <p id="status" role="status">Getting the latest version. Your practice progress stays on this device.</p>
+    <a id="retry" href="refresh.html" hidden>Try again</a>
+    <noscript>Enable JavaScript, then reload this page.</noscript>
+  </main>
+  <script>
+    (async () => {
+      const workers = navigator.serviceWorker;
+      try {
+        if (workers && isSecureContext) {
+          const registration = await workers.register("sw.js", {updateViaCache: "none"});
+          if (registration.active) await registration.update();
+          const worker = registration.installing ?? registration.waiting ?? registration.active;
+          if (!worker) throw new Error("No update is available.");
+
+          await new Promise((resolve, reject) => {
+            const timer = setTimeout(() => finish(new Error("Update timed out.")), 15_000);
+            function finish(error) {
+              clearTimeout(timer);
+              worker.removeEventListener("statechange", check);
+              workers.removeEventListener("controllerchange", check);
+              if (error) reject(error);
+              else resolve();
+            }
+            function check() {
+              if (worker.state === "installed") worker.postMessage({type: "ACTIVATE_UPDATE"});
+              if (worker.state === "activated" && workers.controller === worker) finish();
+              if (worker.state === "redundant") finish(new Error("The update could not be installed."));
+            }
+            worker.addEventListener("statechange", check);
+            workers.addEventListener("controllerchange", check);
+            check();
+          });
+        }
+        location.replace("./");
+      } catch {
+        document.getElementById("status").textContent = "The update could not finish. Try again while connected.";
+        document.getElementById("retry").hidden = false;
+      }
+    })();
+  </script>
+</body>
+</html>

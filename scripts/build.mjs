@@ -26,7 +26,8 @@ for (const path of files) {
   hash.update(path).update("\0").update(await readFile(join(source, path))).update("\0");
 }
 const version = hash.digest("hex").slice(0, 16);
-const cached = files.filter(path => !path.endsWith(".txt"));
+// The recovery page must be available from the server even when an old worker is active.
+const cached = files.filter(path => !path.endsWith(".txt") && path !== "refresh.html");
 const worker = template
   .replace("__CACHE_VERSION__", version)
   .replace("/* __APP_FILES__ */ []", JSON.stringify(cached));
