@@ -1,0 +1,4 @@
+history/
+dist/
+.venv/
+**/__pycache__/

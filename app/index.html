@@ -7,9 +7,11 @@
   <meta name="theme-color" content="#171b18">
   <title>Chess Coach</title>
   <link rel="icon" type="image/svg+xml" href="assets/pieces/wN.svg">
+  <link rel="apple-touch-icon" href="assets/icons/chess-coach-180.png">
   <link rel="stylesheet" href="styles.css">
   <script defer src="repertoire.js"></script>
   <script defer src="trainer.js"></script>
+  <script defer src="pwa.js"></script>
 </head>
 <body>
   <div class="shell" id="chess-coach">
@@ -21,7 +23,10 @@
           <p>Opening practice for blitz</p>
         </div>
       </div>
-      <span class="offline"><span aria-hidden="true"></span> Offline practice</span>
+      <div class="app-actions">
+        <span class="offline" role="status"><span aria-hidden="true"></span><span data-offline-status>Offline practice</span></span>
+        <button class="install-button" type="button" data-install hidden>Install app</button>
+      </div>
     </header>
 
     <main class="workspace">

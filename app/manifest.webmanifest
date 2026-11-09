@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Chess Coach",
+  "short_name": "Chess Coach",
+  "description": "Practice blitz openings against an offline opponent.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#171b18",
+  "theme_color": "#171b18",
+  "icons": [
+    {
+      "src": "assets/icons/chess-coach-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/chess-coach-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

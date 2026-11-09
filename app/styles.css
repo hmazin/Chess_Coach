@@ -25,7 +25,7 @@ button { cursor: pointer; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
 .shell { max-width: 1090px; margin-inline: auto; padding: 30px 28px 38px; }
-.app-header, .brand, .board-heading, .board-footer, .progress-label {
+.app-header, .brand, .app-actions, .board-heading, .board-footer, .progress-label {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -33,6 +33,7 @@ button { cursor: pointer; }
 }
 .app-header { margin-bottom: 23px; }
 .brand { justify-content: start; }
+.app-actions { flex-wrap: wrap; justify-content: end; }
 .brand-icon {
   display: grid;
   place-items: center;
@@ -55,12 +56,22 @@ button { cursor: pointer; }
   font-size: .78rem;
   white-space: nowrap;
 }
-.offline span {
+.offline span[aria-hidden] {
   width: 7px;
   height: 7px;
   background: var(--accent);
   border-radius: 50%;
 }
+.install-button {
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 6px 10px;
+  background: var(--panel);
+  color: var(--accent);
+  font-size: .83rem;
+  white-space: nowrap;
+}
+.install-button:hover { border-color: var(--accent); }
 
 .workspace {
   display: grid;
@@ -201,7 +212,7 @@ progress::-moz-progress-bar { background: var(--accent); }
 }
 
 @media (max-width: 385px) {
-  .offline { display: none; }
+  .app-actions { row-gap: 5px; }
   .board-heading { align-items: start; flex-wrap: wrap; gap: 5px 10px; }
   .board-footer { font-size: .75rem; }
 }

@@ -1,4 +1,6 @@
 /history/
+/.vercel/
+/dist/
 /.venv/
 __pycache__/
 *.pyc
