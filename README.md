@@ -19,7 +19,7 @@ In the hosted app, open **Ask the AI coach** beside the board and unlock it with
 
 The coach sends the practice position, your question, and recent messages from that position to an OpenAI model through Vercel AI Gateway. It uses Stockfish analysis of the practice positions, and its replies include expandable examples. It requires an internet connection. The drills still work offline.
 
-To enable the coach on a deployment, set `COACH_ACCESS_HASH` to the SHA-256 hex digest of a high-entropy personal access code. Set `CHESS_COACH_MODEL` to an OpenAI model ID from Vercel AI Gateway, such as `openai/gpt-6-luna`. The server uses Vercel's OpenID Connect token to authenticate with the gateway.
+To enable the coach on a deployment, set `COACH_ACCESS_HASH` to the SHA-256 hex digest of a high-entropy personal access code. Set `CHESS_COACH_MODEL` to an OpenAI model ID from Vercel AI Gateway, such as `openai/gpt-5.2`. The server uses Vercel's OpenID Connect token to authenticate with the gateway. Vercel requires card verification before the project can use its included AI credits.
 
 ## Install on a phone
 

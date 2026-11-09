@@ -106,7 +106,7 @@ export default async function handler(request, response) {
         model,
         store: false,
         reasoning: {effort: "low"},
-        max_output_tokens: 900,
+        max_output_tokens: 1400,
         input: [
           {type: "message", role: "developer", content: tutor + "\n\n" + boardContext(history, position, move, question, conversation)},
           ...conversation,
