@@ -2,8 +2,7 @@ const version = "__CACHE_VERSION__";
 const paths = /* __APP_FILES__ */ [];
 const scope = new URL(self.registration.scope);
 const prefix = "chess-coach:" + scope.href + ":";
-const generation = prefix + "v2:";
-const cacheName = generation + version;
+const cacheName = prefix + "v3:" + version;
 const assets = new Map(paths.map(path => {
   const url = new URL(path, scope);
   return [url.pathname, url.href];
@@ -13,11 +12,9 @@ const home = new URL("index.html", scope);
 self.addEventListener("install", event => {
   const requests = Array.from(assets.values(), url => new Request(url, {cache: "reload"}));
   event.waitUntil((async () => {
-    const legacy = (await caches.keys()).some(name => name.startsWith(prefix) && !name.startsWith(generation));
     const cache = await caches.open(cacheName);
     await cache.addAll(requests);
-    // Earlier versions have no update button, so migrate them once the new cache is complete.
-    if (legacy) await self.skipWaiting();
+    await self.skipWaiting();
   })());
 });
 

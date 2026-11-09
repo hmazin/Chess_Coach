@@ -32,42 +32,18 @@
   if ("serviceWorker" in navigator && isSecureContext) {
     const workers = navigator.serviceWorker;
     const update = document.querySelector("[data-update]");
-    let registration;
     let controller = workers.controller;
-    let reloadRequested = false;
-    let newerController = false;
 
-    function showUpdate() {
-      update.hidden = !newerController && !registration?.waiting;
-      update.textContent = newerController ? "Reload app" : "Update app";
-    }
-
-    update.addEventListener("click", () => {
-      if (newerController) {
-        location.reload();
-      } else if (registration?.waiting) {
-        reloadRequested = true;
-        registration.waiting.postMessage({type: "ACTIVATE_UPDATE"});
-      }
-    });
-
+    update.addEventListener("click", () => location.assign("refresh.html"));
     workers.addEventListener("controllerchange", () => {
       const previous = controller;
       controller = workers.controller;
-      if (!previous || !controller || previous === controller) return;
-      newerController = true;
-      if (reloadRequested) location.reload();
-      else showUpdate();
+      if (previous && controller && previous !== controller) location.reload();
     });
 
     workers.register("sw.js", {updateViaCache: "none"})
-      .then(link => {
-        registration = link;
-        registration.addEventListener("updatefound", () => {
-          registration.installing?.addEventListener("statechange", showUpdate);
-        });
-        showUpdate();
-
+      .then(registration => {
+        update.hidden = !navigator.onLine;
         let lastCheck = Date.now();
         function checkForUpdate() {
           if (!navigator.onLine || Date.now() - lastCheck < 60_000) return;
@@ -77,7 +53,15 @@
         document.addEventListener("visibilitychange", () => {
           if (!document.hidden) checkForUpdate();
         });
-        window.addEventListener("online", checkForUpdate);
+        window.addEventListener("online", () => {
+          update.hidden = false;
+          lastCheck = 0;
+          checkForUpdate();
+        });
+        window.addEventListener("offline", () => { update.hidden = true; });
+        setInterval(() => {
+          if (!document.hidden) checkForUpdate();
+        }, 60_000);
         return workers.ready;
       })
       .then(() => { status.textContent = "Ready offline"; })
