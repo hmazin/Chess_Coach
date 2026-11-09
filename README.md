@@ -13,6 +13,14 @@ The app includes ten Petrov Defense variations, four Bishop's Opening variations
 
 Your progress and preferences are stored in the browser on the device where you play.
 
+## Ask the AI coach
+
+In the hosted app, open **Ask the AI coach** beside the board and unlock it with your personal access code. Ask what a move achieves, what the opponent might play next, or why a move you tried gives the opponent a chance. You can ask follow-up questions while looking at the same position.
+
+The coach sends the practice position, your question, and recent messages from that position to an OpenAI model through Vercel AI Gateway. It uses Stockfish analysis of the practice positions, and its replies include expandable examples. It requires an internet connection. The drills still work offline.
+
+To enable the coach on a deployment, set `COACH_ACCESS_HASH` to the SHA-256 hex digest of a high-entropy personal access code. Set `CHESS_COACH_MODEL` to an OpenAI model ID from Vercel AI Gateway, such as `openai/gpt-6-luna`. The server uses Vercel's OpenID Connect token to authenticate with the gateway.
+
 ## Install on a phone
 
 Open the deployed HTTPS address. On iPhone, open it in Safari and use **Share → Add to Home Screen** with **Open as Web App** enabled. On Android, use **Install app** when it appears, or use Chrome's **Add to Home screen** menu. Open the app once while connected and wait for **Ready offline** before practicing without a connection.
@@ -37,6 +45,8 @@ python opening-practice/build_repertoire.py app/repertoire.js
 The generator checks legality and rejects inconsistent recommendations for the same position. The generated file is included so the app runs directly from a checkout. The separate PGN files contain the original starter lines for importing into another trainer.
 
 Concept lessons live in [opening-practice/lessons.json](opening-practice/lessons.json). After changing a question, example, or board annotation, run `python opening-practice/build_lessons.py` to regenerate the lesson positions.
+
+When repertoire or lesson positions change, regenerate the coach's analysis with `python opening-practice/build_coach_positions.py PATH_TO_STOCKFISH` using Stockfish 19.
 
 ## Artwork
 

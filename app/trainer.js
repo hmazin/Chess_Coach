@@ -39,6 +39,7 @@
   const mixBags = new Map();
   let opening, line, step, firstStep, selected, hintShown, neededHelp, complete, reviewEmpty;
   let lesson, displayedStep;
+  let lastAttempt = null;
 
   function read(key) {
     try {
@@ -162,6 +163,10 @@
       rank.textContent = index % 8 === 7 ? name[1] : "";
     });
     renderArrows(arrows, order);
+    root.dispatchEvent(new CustomEvent("coach-position", {detail: {
+      history: frame.history,
+      attempted: lastAttempt,
+    }}));
   }
 
   function reviewEntries() {
@@ -276,6 +281,7 @@
 
   function start() {
     selected = "";
+    lastAttempt = null;
     if (mode.value === "learn") {
       lesson = new ConceptLesson(availableLessons()[lineSelect.selectedIndex]);
       reviewEmpty = false;
@@ -354,6 +360,7 @@
       pending.add(frame.position);
     }
     step++;
+    lastAttempt = null;
     complete = reviewing || !current().move;
     if (complete && !reviewing) {
       const key = lineKey(opening, line);
@@ -384,6 +391,7 @@
         selected = "";
         if (frame.legal.includes(attempted)) {
           markForReview(frame);
+          lastAttempt = attempted;
           feedback.textContent = "That move is legal. This variation uses a different response. Try a hint.";
         } else {
           feedback.textContent = "Choose a legal destination for that piece.";

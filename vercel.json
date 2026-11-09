@@ -3,6 +3,9 @@
   "framework": null,
   "buildCommand": "node scripts/build.mjs",
   "outputDirectory": "dist",
+  "functions": {
+    "api/coach.js": {"maxDuration": 30}
+  },
   "headers": [
     {
       "source": "/sw.js",

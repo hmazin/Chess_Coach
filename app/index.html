@@ -12,6 +12,7 @@
   <script defer src="repertoire.js"></script>
   <script defer src="lesson-data.js"></script>
   <script defer src="concepts.js"></script>
+  <script defer src="coach.js"></script>
   <script defer src="trainer.js"></script>
   <script defer src="pwa.js"></script>
 </head>
@@ -101,6 +102,32 @@
           <button class="action" type="button" data-action>Hint</button>
           <button class="action secondary-action" type="button" data-learn>Learn the idea</button>
         </div>
+        <details class="ai-coach" data-ai-coach>
+          <summary>Ask the AI coach</summary>
+          <p class="secondary" data-ai-position></p>
+          <p class="secondary" role="status" data-ai-status></p>
+          <form class="ai-form" data-ai-unlock hidden>
+            <label>
+              Private coach access code
+              <input data-ai-code type="password" maxlength="100" autocomplete="current-password" required>
+            </label>
+            <button class="action" type="submit">Unlock coach</button>
+          </form>
+          <div data-ai-chat hidden>
+            <div class="ai-turns" role="log" aria-live="polite" data-ai-turns></div>
+            <form class="ai-form" data-ai-form>
+              <label>
+                Your question about this position
+                <textarea data-ai-question rows="3" maxlength="900" placeholder="What is White threatening here?" required></textarea>
+              </label>
+              <div class="coach-actions">
+                <button class="action" data-ai-send type="submit">Ask coach</button>
+                <button class="action secondary-action" data-ai-why type="button" hidden>Why not my move?</button>
+              </div>
+            </form>
+            <p class="secondary">Your question and this position are sent to an OpenAI model.</p>
+          </div>
+        </details>
         <div class="move-history">
           <h3>Move history</h3>
           <p data-moves></p>
