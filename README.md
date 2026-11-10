@@ -19,13 +19,13 @@ Choose **Self-play with Stockfish** in Practice setup to start a game from the s
 
 ## Explore both sides
 
-Open **Explore both sides** under any study board. You can play White and Black, choose one of the live Stockfish suggestions, and use **Back one move** to try a different reply. Previously played replies remain available at that position while the exploration is open. **Explain last move** asks the private AI coach about the current branch and includes checked Stockfish continuations.
+Open **Explore both sides** under any study board. You can play White and Black, choose one of the live Stockfish suggestions, and use **Back one move** to try a different reply. Previously played replies remain available at that position while the exploration is open. **Ask AI about last move** opens the private AI coach with a question about the current branch.
 
 Stockfish runs on your device in the hosted app, including offline after the app has cached its files. The exploration uses the [Stockfish.js 19.0.1](https://github.com/nmrugg/stockfish.js/tree/v19.0.1) single-threaded lite build under the GPLv3 and [chess.js](https://github.com/jhlywa/chess.js) under the BSD 2-Clause license. The hosted files include both license texts.
 
-## Ask the AI coach
+## Ask the private AI coach
 
-In the hosted app, open **Ask the AI coach** beside the board and unlock it with your personal access code. Ask what a move achieves, what the opponent might play next, or why a move you tried gives the opponent a chance. You can ask follow-up questions while looking at the same position.
+In the hosted app, open **Ask the private AI coach** beside the board and unlock it with your personal access code. Ask what a move achieves, what the opponent might play next, or why a move you tried gives the opponent a chance. You can ask follow-up questions while looking at the same position. Stockfish suggestions in Self-play and Explore work without an access code.
 
 The coach sends the practice position, your question, and recent messages from that position to an OpenAI model through Vercel AI Gateway. It uses Stockfish analysis of the practice positions, and its replies include expandable examples. It requires an internet connection. The drills still work offline.
 

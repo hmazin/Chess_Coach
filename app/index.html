@@ -120,11 +120,11 @@
             <div class="coach-actions" data-explore-branch-buttons></div>
           </div>
           <div class="explore-analysis">
-            <h3 class="lesson-title">Stockfish analysis</h3>
+            <h3 class="lesson-title" id="stockfish-analysis" tabindex="-1">Stockfish analysis</h3>
             <p class="secondary" role="status" data-explore-status>Loading Stockfish…</p>
             <p class="feedback" data-explore-comparison hidden></p>
             <div class="lesson-choices" data-explore-options></div>
-            <button class="action secondary-action" type="button" data-explore-explain hidden>Explain last move</button>
+            <button class="action secondary-action" type="button" data-explore-explain hidden>Ask AI about last move</button>
             <p class="secondary">Stockfish 19 · <a class="text-link" href="vendor/stockfish-license.txt">License</a> · <a class="text-link" href="https://github.com/nmrugg/stockfish.js/tree/v19.0.1">Source</a></p>
           </div>
         </div>
@@ -143,7 +143,10 @@
       <section class="panel coach-panel" aria-labelledby="coach-title">
         <h2 id="coach-title">Coach</h2>
         <details class="ai-coach" data-ai-coach>
-          <summary>Ask the AI coach</summary>
+          <summary>Ask the private AI coach</summary>
+          <p class="secondary" data-ai-stockfish-link hidden>
+            <a class="text-link" href="#stockfish-analysis">Back to Stockfish analysis</a> · No access code needed
+          </p>
           <p class="secondary" data-ai-position></p>
           <p class="secondary" role="status" data-ai-status></p>
           <form class="ai-form" data-ai-unlock hidden>

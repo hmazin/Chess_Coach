@@ -30,6 +30,7 @@
     get(selector).hidden = true;
   }
   get("[data-explore-setup]").hidden = false;
+  get("[data-ai-stockfish-link]").hidden = false;
   guide.hidden = false;
   get("[data-opening-title]").textContent = selfPlay ? "Self-play" : opening?.name ?? "Explore both sides";
   get("[data-board-instructions]").textContent = "Choose a piece and its destination for either side.";
