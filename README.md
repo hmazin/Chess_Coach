@@ -13,6 +13,10 @@ The app includes fifteen Petrov Defense variations, four Bishop's Opening variat
 
 Your progress and preferences are stored in the browser on the device where you play.
 
+## Self-play with Stockfish
+
+Choose **Self-play with Stockfish** in Practice setup to start a game from the standard position and make moves for both White and Black. The board arrow and the top analysis line show Stockfish’s recommended move for the side to move. You can choose your own move, play the recommendation, go back to try another reply, or start a new game.
+
 ## Explore both sides
 
 Open **Explore both sides** under any study board. You can play White and Black, choose one of the live Stockfish suggestions, and use **Back one move** to try a different reply. Previously played replies remain available at that position while the exploration is open. **Explain last move** asks the private AI coach about the current branch and includes checked Stockfish continuations.

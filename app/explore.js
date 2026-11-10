@@ -1,6 +1,7 @@
 (async () => {
   const params = new URLSearchParams(location.search);
-  if (location.protocol === "file:" || !params.has("explore")) return;
+  const selfPlay = params.has("self-play");
+  if (location.protocol === "file:" || (!selfPlay && !params.has("explore"))) return;
 
   const root = document.getElementById("chess-coach");
   const get = selector => root.querySelector(selector);
@@ -11,13 +12,14 @@
   const best = get("[data-explore-best]");
   const back = get("[data-explore-back]");
   const flip = get("[data-explore-flip]");
+  const reset = get("[data-self-play-reset]");
   const explain = get("[data-explore-explain]");
   const comparison = get("[data-explore-comparison]");
   const options = get("[data-explore-options]");
   const branches = get("[data-explore-branches]");
   const branchButtons = get("[data-explore-branch-buttons]");
   const promotion = get("[data-explore-promotion]");
-  const opening = chessRepertoire.find(item => item.id === params.get("opening"));
+  const opening = selfPlay ? null : chessRepertoire.find(item => item.id === params.get("opening"));
   let orientation = opening?.side ?? "White";
   let selected = "";
   let promotionMoves = [];
@@ -29,9 +31,14 @@
   }
   get("[data-explore-setup]").hidden = false;
   guide.hidden = false;
-  get("[data-opening-title]").textContent = opening?.name ?? "Explore both sides";
+  get("[data-opening-title]").textContent = selfPlay ? "Self-play" : opening?.name ?? "Explore both sides";
   get("[data-board-instructions]").textContent = "Choose a piece and its destination for either side.";
   best.disabled = true;
+  if (selfPlay) {
+    get("[data-explore-title]").textContent = "Self-play with Stockfish";
+    get("[data-explore-description]").textContent = "Play White and Black. The arrow shows Stockfish’s best move for the side to move.";
+    best.textContent = "Play best move";
+  }
 
   let Chess, lineLabel, moveLabel, playCoordinate, StudyEngine;
   try {
@@ -44,13 +51,16 @@
   }
 
   const game = new Chess();
-  let current = {parent: null, children: new Map(), move: null, lines: null};
-  const seed = new Chess();
+  const startingPosition = {parent: null, children: new Map(), move: null, lines: null};
+  let current = startingPosition;
   try {
-    const start = params.get("explore");
+    const start = selfPlay ? "" : params.get("explore");
     if (start.length > 500 || !/^[A-Za-z0-9 .+#=-]*$/.test(start)) throw new Error("Invalid starting line.");
-    if (start) seed.loadPgn(start, {strict: true});
-    for (const move of seed.history({verbose: true})) addMove(move.lan);
+    if (start) {
+      const seed = new Chess();
+      seed.loadPgn(start, {strict: true});
+      for (const move of seed.history({verbose: true})) addMove(move.lan);
+    }
   } catch {
     status.textContent = "This starting position could not load. Return to the lesson and reopen it.";
     return;
@@ -90,6 +100,8 @@
   }
 
   function paint() {
+    const recommendation = selfPlay ? current.lines?.[0]?.moves[0] : null;
+    const arrows = recommendation ? [[recommendation.slice(0, 2), recommendation.slice(2, 4), "idea"]] : [];
     board.render({
       board: chessSquareOrder.map(square => {
         const piece = game.get(square);
@@ -97,7 +109,7 @@
       }).join(""),
       last: current.move ? [current.move.from, current.move.to] : [],
       legal: selected ? game.moves({square: selected, verbose: true}).map(move => move.lan) : [],
-    }, {side: orientation, selected, disabled: game.isGameOver()});
+    }, {side: orientation, selected, arrows, disabled: game.isGameOver()});
   }
 
   function publishPosition() {
@@ -139,14 +151,18 @@
 
   function renderAnalysis() {
     const lines = current.lines ?? [];
+    const color = game.turn() === "w" ? "White" : "Black";
     best.disabled = !lines.length;
     explain.hidden = !current.move;
     explain.disabled = !current.lines && !engineFailed && !game.isGameOver();
-    options.replaceChildren(...lines.map(info => {
+    options.replaceChildren(...lines.map((info, index) => {
       const copy = new Chess(game.fen());
       const variation = info.moves.map(uci => playCoordinate(copy, uci));
-      return moveButton("Play " + moveLabel(variation[0]), info.moves[0],
+      const recommended = selfPlay && index === 0;
+      const button = moveButton((recommended ? "Best for " + color + " · " : "Play ") + moveLabel(variation[0]), info.moves[0],
         evaluation(info, game.turn()) + " · " + lineLabel(variation.slice(0, 5)));
+      button.classList.toggle("is-comparison", recommended);
+      return button;
     }));
     comparison.hidden = !current.parent?.lines?.length || !lines.length;
     if (!comparison.hidden) {
@@ -162,6 +178,7 @@
     else if (engineFailed) status.textContent = "Stockfish could not load. You can still explore moves or reload while connected.";
     else if (!current.lines) status.textContent = "Stockfish is checking this position…";
     else status.textContent = lines.length ? "Short search · Depth " + lines[0].depth + " · Tap a line to play its first move." : "Stockfish found no line for this position.";
+    paint();
     publishPosition();
   }
 
@@ -172,9 +189,9 @@
     turn.textContent = game.isGameOver() ? "Game over" : color + " to move" + (game.isCheck() ? " · Check" : "");
     history.textContent = lineLabel(game.history({verbose: true})) || "Starting position";
     back.disabled = !current.parent;
+    reset.disabled = current === startingPosition && !startingPosition.children.size;
     branches.hidden = current.children.size === 0 || game.isGameOver();
     branchButtons.replaceChildren(...Array.from(current.children, ([uci, node]) => moveButton(moveLabel(node.move), uci)));
-    paint();
     renderAnalysis();
     if (current.lines || game.isGameOver()) {
       engine?.cancel();
@@ -227,6 +244,12 @@
     orientation = orientation === "White" ? "Black" : "White";
     paint();
   });
+  reset.addEventListener("click", () => {
+    game.reset();
+    startingPosition.children.clear();
+    current = startingPosition;
+    showPosition();
+  });
   for (const button of promotion.querySelectorAll("[data-promote]")) {
     button.addEventListener("click", () => {
       const move = promotionMoves.find(move => move.promotion === button.dataset.promote);
@@ -238,5 +261,6 @@
       "What is the main consequence of " + moveLabel(current.move) + "? Start with any checked tactic or material loss. Show one concrete reply and, if Stockfish preferred another move, explain what it does differently.",
     }));
   });
+  reset.hidden = !selfPlay;
   showPosition();
 })();

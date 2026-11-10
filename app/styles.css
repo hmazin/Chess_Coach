@@ -269,7 +269,7 @@ progress::-moz-progress-bar { background: var(--accent); }
   .workspace { grid-template-columns: minmax(0, 1fr); grid-template-areas: "setup" "board" "coach"; gap: 12px; }
   .panel { padding: 12px; }
   .is-learning .setup-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .is-learning .setup-panel h2, .is-learning [data-line-control] { grid-column: 1 / -1; }
+  .is-learning .setup-panel h2, .is-learning [data-line-control], .is-learning [data-self-play-link] { grid-column: 1 / -1; }
   .is-learning .opening-progress, .is-learning [data-mode-description] { display: none; }
 }
 

@@ -38,6 +38,7 @@
     <main class="workspace">
       <section class="panel setup-panel" aria-labelledby="setup-title" data-trainer-setup>
         <h2 id="setup-title">Practice setup</h2>
+        <a class="text-link" data-self-play-link href="?self-play">Self-play with Stockfish</a>
         <label>
           Opening
           <select data-opening></select>
@@ -66,8 +67,8 @@
         </div>
       </section>
       <section class="panel setup-panel" aria-labelledby="explore-title" data-explore-setup hidden>
-        <h2 id="explore-title">Explore both sides</h2>
-        <p class="secondary">Play any legal move. Go back to try a different reply, or ask Stockfish to play one move.</p>
+        <h2 id="explore-title" data-explore-title>Explore both sides</h2>
+        <p class="secondary" data-explore-description>Play any legal move. Go back to try a different reply, or ask Stockfish to play one move.</p>
         <a class="text-link" href="./">Back to lessons</a>
       </section>
 
@@ -106,6 +107,7 @@
             <button class="action secondary-action" type="button" data-explore-back>Back one move</button>
             <button class="action" type="button" data-explore-best>Play Stockfish reply</button>
             <button class="action secondary-action" type="button" data-explore-flip>Flip board</button>
+            <button class="action secondary-action" type="button" data-self-play-reset hidden>New game</button>
           </div>
           <div class="coach-actions" aria-label="Choose a promotion piece" data-explore-promotion hidden>
             <button class="action secondary-action" type="button" data-promote="q">Queen</button>
