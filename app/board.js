@@ -1,6 +1,17 @@
 const chessSquareOrder = Array.from({length: 64}, (_, i) => "abcdefgh"[i % 8] + (8 - Math.floor(i / 8)));
 const chessPieceNames = {k: "king", q: "queen", r: "rook", b: "bishop", n: "knight", p: "pawn"};
 
+function chessBoardFrame(game, lastMove, selected) {
+  return {
+    board: chessSquareOrder.map(square => {
+      const piece = game.get(square);
+      return !piece ? "." : piece.color === "w" ? piece.type.toUpperCase() : piece.type;
+    }).join(""),
+    last: lastMove ? [lastMove.from, lastMove.to] : [],
+    legal: selected ? game.moves({square: selected, verbose: true}).map(move => move.lan) : [],
+  };
+}
+
 class ChessCoachBoard {
   constructor(grid, arrows, choose) {
     this.arrows = arrows;

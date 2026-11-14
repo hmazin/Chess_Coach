@@ -1,7 +1,7 @@
 (async () => {
   const params = new URLSearchParams(location.search);
   const selfPlay = params.has("self-play");
-  if (location.protocol === "file:" || (!selfPlay && !params.has("explore"))) return;
+  if (location.protocol === "file:" || params.has("drills") || (!selfPlay && !params.has("explore"))) return;
 
   const root = document.getElementById("chess-coach");
   const get = selector => root.querySelector(selector);
@@ -103,14 +103,9 @@
   function paint() {
     const recommendation = selfPlay ? current.lines?.[0]?.moves[0] : null;
     const arrows = recommendation ? [[recommendation.slice(0, 2), recommendation.slice(2, 4), "idea"]] : [];
-    board.render({
-      board: chessSquareOrder.map(square => {
-        const piece = game.get(square);
-        return !piece ? "." : piece.color === "w" ? piece.type.toUpperCase() : piece.type;
-      }).join(""),
-      last: current.move ? [current.move.from, current.move.to] : [],
-      legal: selected ? game.moves({square: selected, verbose: true}).map(move => move.lan) : [],
-    }, {side: orientation, selected, arrows, disabled: game.isGameOver()});
+    board.render(chessBoardFrame(game, current.move, selected), {
+      side: orientation, selected, arrows, disabled: game.isGameOver(),
+    });
   }
 
   function publishPosition() {

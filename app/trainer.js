@@ -1,9 +1,10 @@
 (() => {
   const params = new URLSearchParams(location.search);
-  if (location.protocol !== "file:" && (params.has("explore") || params.has("self-play"))) return;
+  if (location.protocol !== "file:" && (params.has("explore") || params.has("self-play") || params.has("drills"))) return;
   const root = document.getElementById("chess-coach");
   if (location.protocol === "file:") {
     root.querySelector("[data-self-play-link]").href = "https://hmazin-chess-coach.vercel.app/?self-play";
+    root.querySelector("[data-drills-link]").href = "https://hmazin-chess-coach.vercel.app/?drills";
   }
   const openingSelect = root.querySelector("[data-opening]");
   const mode = root.querySelector("[data-mode]");

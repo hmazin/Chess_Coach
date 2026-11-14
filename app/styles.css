@@ -221,6 +221,17 @@ progress::-moz-progress-bar { background: var(--accent); }
   font-weight: 650;
 }
 .action:hover { background: #e3f3b9; }
+.drill-link { text-decoration: none; }
+.drill-guide { display: grid; gap: 8px; max-width: 570px; margin: 14px auto 0; }
+.drill-guide .feedback { min-height: 0; }
+.drill-clock { align-items: center; }
+.drill-clock .turn-badge { font-variant-numeric: tabular-nums; }
+.drill-recommendation { display: grid; gap: 8px; }
+.panel .drill-timer-option { display: flex; align-items: center; gap: 8px; }
+.drill-timer-option input { accent-color: var(--accent); }
+.drill-import input { max-width: 100%; font: inherit; }
+.drill-import button, .drill-import [role="status"] { margin-top: 8px; }
+.drill-import [role="status"]:empty { display: none; }
 .secondary-action, .lesson-choice {
   border: 1px solid var(--border);
   background: var(--field);
@@ -270,7 +281,7 @@ progress::-moz-progress-bar { background: var(--accent); }
   .workspace { grid-template-columns: minmax(0, 1fr); grid-template-areas: "setup" "board" "coach"; gap: 12px; }
   .panel { padding: 12px; }
   .is-learning .setup-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .is-learning .setup-panel h2, .is-learning [data-line-control], .is-learning [data-self-play-link] { grid-column: 1 / -1; }
+  .is-learning .setup-panel h2, .is-learning [data-line-control], .is-learning [data-self-play-link], .is-learning .drill-link { grid-column: 1 / -1; }
   .is-learning .opening-progress, .is-learning [data-mode-description] { display: none; }
 }
 

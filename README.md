@@ -13,6 +13,12 @@ The app includes fifteen Petrov Defense variations, four Bishop's Opening variat
 
 Your progress and preferences are stored in the browser on the device where you play.
 
+## Blitz drills
+
+Choose **Blitz drills** in Practice setup to practice threat checks, recaptures, defended captures, and finishing with low time. Play the moves on the board and work through the checked replies. Chess Coach recommends a position to try next, prioritizing drills you needed help with. Turn on the 10-second clock with a two-second increment for any position.
+
+Open **Practice your own positions** to import a practice PGN. Each entry needs a starting FEN and a short solution line. The file and progress are saved in that browser, so you can return to the drills offline once Chess Coach is ready offline.
+
 ## Self-play with Stockfish
 
 Choose **Self-play with Stockfish** in Practice setup to start a game from the standard position and make moves for both White and Black. The board arrow and the top analysis line show Stockfish’s recommended move for the side to move. You can choose your own move, play the recommendation, go back to try another reply, or start a new game.
