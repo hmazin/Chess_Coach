@@ -82,7 +82,7 @@
         </label>
         <label class="drill-timer-option">
           <input type="checkbox" data-drill-timed>
-          Use a 10-second clock with a 2-second increment
+          Use a clock with a 2-second increment
         </label>
         <details class="ai-coach drill-import">
           <summary>Practice your own positions</summary>
@@ -137,6 +137,11 @@
             <button class="action" type="button" data-drill-start>Start 10-second clock</button>
           </div>
           <p class="feedback" data-drill-feedback aria-live="polite"></p>
+          <div class="coach-actions drill-clock" data-drill-replay hidden>
+            <button class="action secondary-action" type="button" data-drill-back>Previous move</button>
+            <button class="action secondary-action" type="button" data-drill-forward>Next move</button>
+            <span class="secondary" data-drill-ply></span>
+          </div>
           <div class="coach-actions" data-drill-promotion aria-label="Choose a promotion piece" hidden>
             <button class="action secondary-action" type="button" data-promotion="q">Queen</button>
             <button class="action secondary-action" type="button" data-promotion="r">Rook</button>
@@ -146,6 +151,7 @@
           <div class="coach-actions">
             <button class="action secondary-action" type="button" data-drill-hint>Hint</button>
             <button class="action secondary-action" type="button" data-drill-solution>Show solution</button>
+            <button class="action secondary-action" type="button" data-drill-original hidden>Replay game moves</button>
             <button class="action secondary-action" type="button" data-drill-retry hidden>Try again</button>
             <button class="action" type="button" data-drill-next hidden>Next drill</button>
           </div>
@@ -191,6 +197,7 @@
       <section class="panel coach-panel" aria-labelledby="coach-title">
         <h2 id="coach-title">Coach</h2>
         <p class="feedback" data-drill-advice hidden></p>
+        <a class="text-link drill-source" data-drill-source hidden>View the original game</a>
         <details class="ai-coach" data-ai-coach>
           <summary>Ask the private AI coach</summary>
           <p class="secondary" data-ai-stockfish-link hidden>

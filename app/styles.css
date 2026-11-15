@@ -227,6 +227,7 @@ progress::-moz-progress-bar { background: var(--accent); }
 .drill-clock { align-items: center; }
 .drill-clock .turn-badge { font-variant-numeric: tabular-nums; }
 .drill-recommendation { display: grid; gap: 8px; }
+.drill-source { font-size: .85rem; }
 .panel .drill-timer-option { display: flex; align-items: center; gap: 8px; }
 .drill-timer-option input { accent-color: var(--accent); }
 .drill-import input { max-width: 100%; font: inherit; }

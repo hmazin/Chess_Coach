@@ -15,7 +15,7 @@ Your progress and preferences are stored in the browser on the device where you 
 
 ## Blitz drills
 
-Choose **Blitz drills** in Practice setup to practice threat checks, recaptures, defended captures, and finishing with low time. Play the moves on the board and work through the checked replies. Chess Coach recommends a position to try next, prioritizing drills you needed help with. Turn on the 10-second clock with a two-second increment for any position.
+Choose **Blitz drills** in Practice setup to play decisions from completed rated 3+2 games in the [Lichess open database](https://database.lichess.org/). The board shows the last move. Play your choice to see a checked reply and compare with the original game. Stockfish checks moves outside the prepared lines on your device. Chess Coach recommends a position to try next, prioritizing drills you needed help with. You can turn on a clock with a two-second increment for any position.
 
 Open **Practice your own positions** to import a practice PGN. Each entry needs a starting FEN and a short solution line. The file and progress are saved in that browser, so you can return to the drills offline once Chess Coach is ready offline.
 

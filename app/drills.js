@@ -16,25 +16,29 @@
   const recommendation = get("[data-drill-recommendation]");
   const feedback = get("[data-drill-feedback]");
   const advice = get("[data-drill-advice]");
+  const sourceLink = get("[data-drill-source]");
   const promotion = get("[data-drill-promotion]");
   const hint = get("[data-drill-hint]");
   const solution = get("[data-drill-solution]");
+  const original = get("[data-drill-original]");
   const retry = get("[data-drill-retry]");
   const next = get("[data-drill-next]");
   const clock = get("[data-drill-clock]");
+  const replay = get("[data-drill-replay]");
+  const back = get("[data-drill-back]");
+  const forward = get("[data-drill-forward]");
   const startClock = get("[data-drill-start]");
   const importedStatus = get("[data-drill-import-status]");
   const remove = get("[data-drill-remove]");
   const prefix = "chess-coach:v1:drill:";
   const importedKey = "imported-pgn";
   const localFallback = new Map();
-  const initialTime = 10_000;
   const increment = 2_000;
 
-  let Chess, playCoordinate, moveLabel, lineLabel, drillPositions, readPracticePgn, maxDrillFileSize;
+  let Chess, playCoordinate, moveLabel, lineLabel, drillPositions, readPracticePgn, maxDrillFileSize, StudyEngine;
   try {
-    [{Chess}, {playCoordinate, moveLabel, lineLabel}, {drillPositions}, {readPracticePgn, maxDrillFileSize}] = await Promise.all([
-      import("./vendor/chess.js"), import("./chess-lines.js"), import("./drill-positions.js"), import("./drill-pgn.js"),
+    [{Chess}, {playCoordinate, moveLabel, lineLabel}, {drillPositions}, {readPracticePgn, maxDrillFileSize}, {StudyEngine}] = await Promise.all([
+      import("./vendor/chess.js"), import("./chess-lines.js"), import("./drill-positions.js"), import("./drill-pgn.js"), import("./study-engine.js"),
     ]);
   } catch {
     status.textContent = "Drills could not load. Open Chess Coach while connected and try again.";
@@ -43,10 +47,12 @@
 
   const board = new ChessCoachBoard(get("[data-board]"), get("[data-board-arrows]"), choose);
   let imported = [];
-  let drill, game, state, lines, trap, selected, promotionMoves, assisted, arrows;
+  let drill, game, state, lines, trap, selected, promotionMoves, assisted, arrows, hinted, engine;
+  let replayMoves = [];
+  let replayPly = 0;
+  let remaining;
   let deadline = null;
   let timer;
-  let remaining = initialTime;
 
   function read(key) {
     if (localFallback.has(key)) return localFallback.get(key);
@@ -124,6 +130,11 @@
     if (focus) title.focus();
   }
 
+  function readLine(sequence) {
+    const copy = new Chess(drill.fen);
+    return sequence.map(san => copy.move(san, {strict: true}));
+  }
+
   function stopTimer() {
     clearInterval(timer);
     if (deadline !== null) remaining = Math.max(0, deadline - performance.now());
@@ -131,22 +142,23 @@
   }
 
   function reset() {
+    engine?.cancel();
     stopTimer();
-    remaining = initialTime;
+    remaining = (drill.seconds ?? 10) * 1000;
     game = new Chess(drill.fen);
-    const toMoves = sequence => {
-      const copy = new Chess(drill.fen);
-      return sequence.map(san => copy.move(san, {strict: true}));
-    };
-    lines = drill.lines.map(toMoves);
-    trap = drill.trap ? toMoves(drill.trap.line) : [];
+    lines = drill.lines.map(readLine);
+    trap = drill.trap ? readLine(drill.trap.line) : [];
     state = timed.checked ? "ready" : "playing";
     selected = "";
     promotionMoves = [];
     arrows = [];
     assisted = false;
+    hinted = false;
+    replayMoves = [];
+    replayPly = 0;
     title.textContent = drill.title;
-    question.textContent = drill.prompt;
+    question.textContent = drill.context ?? "What would you play here?";
+    startClock.textContent = "Start " + (drill.seconds ?? 10) + "-second clock";
     feedback.textContent = "";
     render();
   }
@@ -163,14 +175,14 @@
     state = "timeout";
     selected = "";
     promotionMoves = [];
-    feedback.textContent = "Time ran out. Try again or replay the solution.";
+    feedback.textContent = "Time ran out. Try again or compare the checked line.";
     record("review");
     render();
     return false;
   }
 
   function paint(trail = game.history({verbose: true})) {
-    board.render(chessBoardFrame(game, trail.at(-1), selected), {
+    board.render(chessBoardFrame(game, trail.at(-1) ?? drill.previousMove, selected), {
       side: drill.fen.split(" ")[1] === "w" ? "White" : "Black",
       disabled: state !== "playing",
       selected, arrows,
@@ -183,7 +195,11 @@
     const active = state === "playing";
     const done = state === "solved" || state === "revealed";
     const color = game.turn() === "w" ? "White" : "Black";
-    const turnLabels = {solved: "Drill complete", missed: "Review the reply", timeout: "Time ran out", revealed: "Solution"};
+    const turnLabels = {
+      solved: "Drill complete", alternative: "Sound alternative", missed: "Review the reply",
+      timeout: "Time ran out", revealed: "Checked line", checking: "Checking move", ungraded: "Move played",
+      original: "Game continuation",
+    };
     paint(trail);
     get("[data-turn]").textContent = turnLabels[state] ?? color + " to move";
     instructions.textContent = state === "ready" ? "Start the clock when you are ready." : active ? "Choose a piece, then its destination." : "";
@@ -191,11 +207,21 @@
     get("[data-drill-clock-controls]").hidden = !timed.checked;
     startClock.hidden = state !== "ready";
     hint.hidden = !active;
-    solution.hidden = done;
+    hint.textContent = hinted ? "Show move hint" : "Hint";
+    solution.hidden = done || state === "checking";
+    solution.textContent = state === "alternative" || state === "original" ? "Compare checked line" : "Show checked line";
     retry.hidden = state === "ready" || (active && !trail.length && !assisted);
-    next.hidden = active || state === "ready";
-    advice.hidden = !drill.advice || state === "ready" || active;
-    advice.textContent = drill.advice ?? "";
+    next.hidden = active || state === "ready" || state === "checking";
+    const reviewed = done || ["alternative", "missed", "original"].includes(state);
+    original.hidden = !drill.gameLine || !reviewed || state === "original";
+    advice.hidden = !drill.advice || !reviewed;
+    advice.textContent = [state !== "original" && drill.gameNote, drill.advice].filter(Boolean).join(" ");
+    sourceLink.hidden = !drill.source || !reviewed;
+    if (drill.source) sourceLink.href = drill.source;
+    replay.hidden = !replayMoves.length;
+    back.disabled = replayPly === 0;
+    forward.disabled = replayPly === replayMoves.length;
+    get("[data-drill-ply]").textContent = replayPly + " of " + replayMoves.length + " half-moves";
     updateClock();
   }
 
@@ -219,27 +245,27 @@
 
   function play(move) {
     if (state !== "playing" || !checkTime()) return;
+    if (deadline !== null) deadline += increment;
     const index = game.history().length;
     const matches = lines.filter(line => line[index]?.lan === move.lan);
     selected = "";
     promotionMoves = [];
     arrows = [];
+    hinted = false;
     if (!matches.length) {
-      assisted = true;
-      record("review");
       if (index === 0 && trap[0]?.lan === move.lan) {
-        for (const reply of trap) playCoordinate(game, reply.lan);
         stopTimer();
         state = "missed";
         feedback.textContent = drill.trap.explanation;
+        record("review");
+        showReplay(trap, 2);
       } else {
-        feedback.textContent = moveLabel(move) + " is outside this drill's solution. Try another move or show the line.";
+        checkAlternative(move);
       }
       render();
       return;
     }
 
-    if (deadline !== null) deadline += increment;
     lines = matches;
     const line = lines[0];
     playCoordinate(game, move.lan);
@@ -252,14 +278,94 @@
       state = "solved";
       feedback.textContent = drill.explanation;
       record(assisted ? "review" : "solved");
+      showReplay(game.history({verbose: true}));
     }
     render();
+  }
+
+  function finishUnverified() {
+    if (state !== "checking") return;
+    state = "ungraded";
+    feedback.textContent = "Stockfish couldn't finish checking your move. You can still compare the checked line.";
+    render();
+  }
+
+  function checkAlternative(move) {
+    const moves = game.history({verbose: true}).map(move => move.lan);
+    const position = game;
+    const fen = drill.fen;
+    playCoordinate(game, move.lan);
+    stopTimer();
+    state = "checking";
+    feedback.textContent = "Checking " + moveLabel(move) + " with Stockfish on this device…";
+    try {
+      engine ??= new StudyEngine(finishUnverified);
+    } catch {
+      finishUnverified();
+      return;
+    }
+    if (engine.failed) {
+      finishUnverified();
+      return;
+    }
+    engine.analyze(moves, ([best, ...others]) => {
+      if (game !== position || state !== "checking") return;
+      if (!best) {
+        finishUnverified();
+        return;
+      }
+      const found = [best, ...others].find(line => line.moves[0] === move.lan);
+      if (found) finishAlternative(move, best, found);
+      else engine.analyze(moves, ([candidate]) => {
+        if (game !== position || state !== "checking") return;
+        if (candidate?.moves[0] === move.lan) finishAlternative(move, best, candidate);
+        else finishUnverified();
+      }, {fen, candidate: move.lan});
+    }, {fen});
+  }
+
+  function finishAlternative(move, best, candidate) {
+    const mateValue = line => line.type === "mate" ? Math.sign(line.score) * (10000 - Math.abs(line.score)) : line.score;
+    const top = mateValue(best);
+    const played = mateValue(candidate);
+    const sound = top - played <= 80 || (top >= 300 && played >= 300);
+    const reply = candidate.moves[1] ? playCoordinate(game, candidate.moves[1]) : null;
+    const bestMove = playCoordinate(new Chess(move.before), best.moves[0]);
+    const consequence = !reply ? "" : reply.captured
+      ? " With " + moveLabel(reply) + ", your opponent takes your " + chessPieceNames[reply.captured] + " on " + reply.to + "."
+      : " One strong reply is " + moveLabel(reply) + ".";
+    state = sound ? "alternative" : "missed";
+    feedback.textContent = sound
+      ? moveLabel(move) + " also works in Stockfish's short search." + consequence
+      : moveLabel(move) + " gives up ground in Stockfish's short search." +
+        consequence + " It prefers " + moveLabel(bestMove) + ".";
+    record(sound && !assisted ? "solved" : "review");
+    showReplay(game.history({verbose: true}));
+    render();
+  }
+
+  function showReplay(moves, ply = moves.length) {
+    replayMoves = moves.map(move => move.lan);
+    seekReplay(ply);
+  }
+
+  function seekReplay(ply) {
+    replayPly = Math.max(0, Math.min(ply, replayMoves.length));
+    game = new Chess(drill.fen);
+    for (const move of replayMoves.slice(0, replayPly)) playCoordinate(game, move);
+  }
+
+  for (const [button, step] of [[back, -1], [forward, 1]]) {
+    button.addEventListener("click", () => {
+      seekReplay(replayPly + step);
+      render();
+    });
   }
 
   startClock.addEventListener("click", () => {
     if (state !== "ready") return;
     state = "playing";
-    deadline = performance.now() + initialTime;
+    deadline = performance.now() + remaining;
     timer = setInterval(checkTime, 100);
     render();
     get("[data-board] button").focus();
@@ -269,23 +375,32 @@
     assisted = true;
     record("review");
     const index = game.history().length;
-    const move = lines[0][index];
-    arrows = [[move.from, move.to, "idea"]];
-    feedback.textContent = "Look at the piece on " + move.from + ". " +
-      (index === 0 ? drill.hint ?? "" : drill.followUp ?? "");
+    const cue = index === 0 ? drill.hint : drill.followUp;
+    if (hinted || !cue) {
+      const move = lines[0][index];
+      arrows = [[move.from, move.to, "idea"]];
+      feedback.textContent = "Look at the piece on " + move.from + ".";
+    } else feedback.textContent = cue;
+    hinted = true;
     render();
   });
   solution.addEventListener("click", () => {
     stopTimer();
-    const finalLine = lines[0];
-    game = new Chess(drill.fen);
-    for (const move of finalLine) playCoordinate(game, move.lan);
+    const compared = state === "alternative" || state === "original";
+    const finalLine = state === "original" ? readLine(drill.lines[0]) : lines[0];
     state = "revealed";
     selected = "";
     promotionMoves = [];
     arrows = [];
     feedback.textContent = lineLabel(finalLine) + ". " + drill.explanation;
-    record("review");
+    if (!compared) record("review");
+    showReplay(finalLine, 1);
+    render();
+  });
+  original.addEventListener("click", () => {
+    state = "original";
+    feedback.textContent = drill.gameNote;
+    showReplay(readLine(drill.gameLine), 2);
     render();
   });
   retry.addEventListener("click", reset);

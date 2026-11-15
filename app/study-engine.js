@@ -43,16 +43,17 @@ export class StudyEngine {
     if (!this.ready || this.active || !this.next) return;
     this.active = this.next;
     this.next = null;
-    const moves = this.active.moves.join(" ");
-    this.worker.postMessage(moves ? "position startpos moves " + moves : "position startpos");
-    this.worker.postMessage("go depth 18 movetime 1500");
+    const {moves, fen, candidate} = this.active;
+    const position = fen ? "fen " + fen : "startpos";
+    this.worker.postMessage("position " + position + (moves.length ? " moves " + moves.join(" ") : ""));
+    this.worker.postMessage("go depth 18 movetime 1500" + (candidate ? " searchmoves " + candidate : ""));
     this.timer = setTimeout(() => this.fail(), 10000);
   }
 
-  analyze(moves, callback) {
+  analyze(moves, callback, {fen, candidate} = {}) {
     if (this.failed) return;
     this.cancel();
-    this.next = {moves, callback, lines: new Map()};
+    this.next = {moves, callback, fen, candidate, lines: new Map()};
     this.start();
   }
 

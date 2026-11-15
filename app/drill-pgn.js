@@ -26,7 +26,7 @@ export function readPracticePgn(source) {
     drills.set(id, {
       id, fen,
       title: headers.Event?.slice(0, 100) || "Imported position " + (index + 1),
-      prompt: comments.get(fen) || "Find the move in the practice line.",
+      hint: comments.get(fen),
       lines: [trail.map(move => move.san)],
       explanation: comments.get(trail.at(-1).after) || "Replay the solution and check which squares each move controls.",
     });
