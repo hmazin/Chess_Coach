@@ -1,7 +1,7 @@
 (async () => {
   const params = new URLSearchParams(location.search);
   const selfPlay = params.has("self-play");
-  if (location.protocol === "file:" || params.has("drills") || (!selfPlay && !params.has("explore"))) return;
+  if (location.protocol === "file:" || params.has("drills") || params.has("foundations") || (!selfPlay && !params.has("explore"))) return;
 
   const root = document.getElementById("chess-coach");
   const get = selector => root.querySelector(selector);

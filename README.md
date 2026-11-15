@@ -13,6 +13,10 @@ The app includes fifteen Petrov Defense variations, four Bishop's Opening variat
 
 Your progress and preferences are stored in the browser on the device where you play.
 
+## Blitz fundamentals
+
+Choose **Learn blitz fundamentals** to start with a board-reading check, work through the idea with annotated positions, and finish with an independent check in a different game. The two lessons cover reading the opponent’s threat and calculating the whole exchange. Each lesson rotates its final position on the next attempt, saves the result in your browser, and links to a drill for applying the same skill.
+
 ## Blitz drills
 
 Choose **Blitz drills** in Practice setup to play decisions from completed rated 3+2 games in the [Lichess open database](https://database.lichess.org/). The board shows the last move. Play your choice to see a checked reply and compare with the original game. Stockfish checks moves outside the prepared lines on your device. Chess Coach recommends a position to try next, prioritizing drills you needed help with. You can turn on a clock with a two-second increment for any position.

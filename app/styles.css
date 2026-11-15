@@ -224,6 +224,7 @@ progress::-moz-progress-bar { background: var(--accent); }
 .drill-link { text-decoration: none; }
 .drill-guide { display: grid; gap: 8px; max-width: 570px; margin: 14px auto 0; }
 .drill-guide .feedback { min-height: 0; }
+.drill-guide .action:disabled { opacity: .55; cursor: default; }
 .drill-clock { align-items: center; }
 .drill-clock .turn-badge { font-variant-numeric: tabular-nums; }
 .drill-recommendation { display: grid; gap: 8px; }

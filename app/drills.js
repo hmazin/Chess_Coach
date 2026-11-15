@@ -1,5 +1,6 @@
 (async () => {
-  if (location.protocol === "file:" || !new URLSearchParams(location.search).has("drills")) return;
+  const params = new URLSearchParams(location.search);
+  if (location.protocol === "file:" || !params.has("drills") || params.has("foundations")) return;
 
   const root = document.getElementById("chess-coach");
   const get = selector => root.querySelector(selector);
@@ -467,5 +468,5 @@
   get("[data-drill-guide]").hidden = false;
   fillSelect();
   remove.hidden = !saved;
-  load(recommended());
+  load(allDrills().find(item => item.id === params.get("position")) ?? recommended());
 })();
